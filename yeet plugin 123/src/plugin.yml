@@ -1,0 +1,14 @@
+main: nl.lucasridder.java.Main
+name: hub
+version: 1.1
+author: LucasRidder
+api-version: 1.15
+
+commands:
+ gamemode:
+  aliases: gm
+  usage: "Usage: /<command> [survival|creative|adventure|spectator|0|1|2|3] ([player])"
+ fly:
+ survival:
+ minigames:
+ setspawn:
