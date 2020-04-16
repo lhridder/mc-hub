@@ -26,6 +26,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -112,6 +118,24 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			player.getInventory().setItem(5, stack3);
 			player.updateInventory();
 
+		//scoreboard
+			ScoreboardManager manager = Bukkit.getScoreboardManager();
+			Scoreboard b = manager.getNewScoreboard();
+			
+			Objective o = b.registerNewObjective("Gold", "", "Tutorial");
+			o.setDisplaySlot(DisplaySlot.SIDEBAR);
+			
+			Score score2 = o.getScore(ChatColor.YELLOW + "Welkom, " + ChatColor.GRAY + player.getName());
+			score2.setScore(2);
+			
+			Score score1 = o.getScore("");
+			score1.setScore(1);
+			
+			Score score0 = o.getScore(ChatColor.GOLD + "IP: " + ChatColor.GREEN + "VPS.LucasRidder.NL");
+			score0.setScore(0);
+			
+			player.setScoreboard(b);
+			
 		//join message
 		if(player.isOp()) {
 			//stop melding
@@ -195,6 +219,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	//Admin Commands
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		
 		if(cmd.getName().equalsIgnoreCase("gamemode")) {
 			
 			//check of sender speler is
