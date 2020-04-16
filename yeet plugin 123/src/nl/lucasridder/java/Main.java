@@ -86,10 +86,8 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		
 		//spawn loc
 			try {
-			int X = (int) this.getConfig().get("spawn.x");
-			int x = (int) (X + 0.5);
-			int Y = (int) this.getConfig().get("spawn.y");
-			int y = (int) (Y + 0.5);
+			int x = (int) this.getConfig().get("spawn.x");
+			int y = (int) this.getConfig().get("spawn.y");
 			int z = (int) this.getConfig().get("spawn.z");
 			float yaw = (float) this.getConfig().get("spawn.yaw");
 			float pitch = (float) this.getConfig().get("spawn.pitch");
@@ -177,6 +175,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			player.sendMessage(ChatColor.BLUE + "Beschikbare servers: ");
 			player.sendMessage(ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/minigames");
 			player.sendMessage("");
+			player.sendMessage("");
 		} else {
 			e.setJoinMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "+" + ChatColor.DARK_GRAY + "] " + ChatColor.RESET + name);
 			player.sendMessage("");
@@ -195,6 +194,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			player.sendMessage(ChatColor.DARK_GRAY + "Welkom, " + ChatColor.GOLD + name);
 			player.sendMessage(ChatColor.BLUE + "Beschikbare servers: ");
 			player.sendMessage(ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/minigames");
+			player.sendMessage("");
 			player.sendMessage("");
 		}
 		
@@ -454,27 +454,28 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				  out.writeUTF("Connect");
 				  out.writeUTF("survival");
 				player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-				}
-			if(player.getItemInHand().equals(stack2)) {
+		} else if(player.getItemInHand().equals(stack2)) {
 				player.sendMessage(ChatColor.GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "minigames");
 				//BUNGEE
 				ByteArrayDataOutput out = ByteStreams.newDataOutput();
 				  out.writeUTF("Connect");
 				  out.writeUTF("minigames");
 				player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-				}
-			if(player.getItemInHand().equals(stack3)) {
+		} else if(player.getItemInHand().equals(stack3)) {
 				player.sendMessage(ChatColor.GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "pixelmon");
 				//BUNGEE
 				ByteArrayDataOutput out = ByteStreams.newDataOutput();
 				  out.writeUTF("Connect");
 				  out.writeUTF("sponge");
 				player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-				}
 		} else {
-			e.setCancelled(true);
+			if(player.isOp()) {
+				//niks
+			} else {
+				e.setCancelled(true);
+			}
 		}
-	
+		}
 		}
 
 	//INV click
