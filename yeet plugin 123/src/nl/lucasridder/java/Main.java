@@ -1,10 +1,6 @@
 package nl.lucasridder.java;
 
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -35,7 +31,6 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import net.md_5.bungee.api.ChatColor;
 
 
 public class Main extends JavaPlugin implements Listener, PluginMessageListener {
@@ -105,9 +100,9 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			ItemMeta meta1 = stack1.getItemMeta();
 			ItemMeta meta2 = stack2.getItemMeta();
 			ItemMeta meta3 = stack3.getItemMeta();
-			meta1.setDisplayName(ChatColor.GOLD + "Join survival");
-			meta2.setDisplayName(ChatColor.GOLD + "Join minigames");
-			meta3.setDisplayName(ChatColor.GOLD + "Join pixelmon");
+			meta1.setDisplayName(ChatColor.GOLD + "Join survival!");
+			meta2.setDisplayName(ChatColor.GOLD + "Join minigames!");
+			meta3.setDisplayName(ChatColor.GOLD + "Join pixelmon!");
 			stack1.setItemMeta(meta1);
 			stack2.setItemMeta(meta2);
 			stack3.setItemMeta(meta3);
