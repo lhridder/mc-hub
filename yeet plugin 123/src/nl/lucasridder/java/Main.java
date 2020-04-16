@@ -16,6 +16,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -394,10 +395,20 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		String name = e.getPlayer().getName();
 		String message = e.getMessage();
 		if(player.isOp()) {
-			e.setMessage(ChatColor.GOLD + name + ChatColor.DARK_GRAY + " >> " + ChatColor.RESET + message);
 			e.setFormat(ChatColor.GOLD + name + ChatColor.DARK_GRAY + " >> " + ChatColor.RESET + message);
 		} else {
-			e.setMessage(ChatColor.GRAY + name + ChatColor.DARK_GRAY + " >> " + ChatColor.RESET + message);
+			e.setFormat(ChatColor.GRAY + name + ChatColor.DARK_GRAY + " >> " + ChatColor.RESET + message);
+		}
+	}
+	
+	//Drop
+	@EventHandler
+	public void onDrop(PlayerDropItemEvent e) {
+		Player player = (Player) e.getPlayer();
+		if(player.isOp()) {
+			//niks
+		} else {
+			e.setCancelled(true);
 		}
 	}
 	
