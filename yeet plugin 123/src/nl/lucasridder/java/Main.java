@@ -51,13 +51,8 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
 		
 		//config
-		if(this.getConfig().contains("spawn")) {
-			//doe niks
-		} else {
 		this.getConfig().options().copyDefaults(true);
-		}
-        this.saveConfig();
-        this.reloadConfig();
+        this.saveDefaultConfig();
 		
 		//enable
 		System.out.println("[HUB]" + ChatColor.GREEN + " succesfully enabled");
