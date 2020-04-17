@@ -436,7 +436,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		ItemStack stack1 = new ItemStack(Material.GRASS_BLOCK);
 		ItemStack stack2 = new ItemStack(Material.DIAMOND_SWORD);
 		ItemStack stack3 = new ItemStack(Material.RED_WOOL);
-		if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+		if(e.getAction().equals(Action.RIGHT_CLICK_AIR)) {
 			if(player.getItemInHand().equals(stack1)) {
 				player.sendMessage(ChatColor.GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "survival");
 				//BUNGEE
@@ -444,14 +444,14 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				  out.writeUTF("Connect");
 				  out.writeUTF("survival");
 				player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-		} else if(player.getItemInHand().equals(stack2)) {
+			} else if(player.getItemInHand().equals(stack2)) {
 				player.sendMessage(ChatColor.GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "minigames");
 				//BUNGEE
 				ByteArrayDataOutput out = ByteStreams.newDataOutput();
 				  out.writeUTF("Connect");
 				  out.writeUTF("minigames");
 				player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-		} else if(player.getItemInHand().equals(stack3)) {
+			} else if(player.getItemInHand().equals(stack3)) {
 				player.sendMessage(ChatColor.GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "pixelmon");
 				//BUNGEE
 				ByteArrayDataOutput out = ByteStreams.newDataOutput();
@@ -468,12 +468,12 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		}
 		}
 
-	//INV click
+	//Inv click
 	@EventHandler
 	public void onClick(InventoryClickEvent e) {
 		Player player = (Player) e.getWhoClicked();
 		if(player.isOp()) {
-			//niks
+			e.setCancelled(false);
 		} else {
 			e.setCancelled(true);
 		}
