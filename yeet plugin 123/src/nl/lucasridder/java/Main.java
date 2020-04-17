@@ -36,7 +36,6 @@ import com.google.common.io.ByteStreams;
 public class Main extends JavaPlugin implements Listener, PluginMessageListener {
 	
 	//Start-up
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onEnable() {
 		// start up plugin
@@ -45,7 +44,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		
 		//stop tijd
 		World world = Bukkit.getServer().getWorld("world");
-	    world.setGameRuleValue("doDaylightCycle", "false");
+	    world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
 	    
 		//register events
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
@@ -257,6 +256,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				}
 				
 			}
+
 			//andere speler
 			if(args.length == 2 ) {
 				//pak speler
