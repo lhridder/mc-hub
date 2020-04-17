@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -106,22 +107,33 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			player.updateInventory();
 
 		//scoreboard
-			ScoreboardManager manager = Bukkit.getScoreboardManager();
-			Scoreboard b = manager.getNewScoreboard();
-			
-			Objective o = b.registerNewObjective("Gold", "", "Tutorial");
-			o.setDisplaySlot(DisplaySlot.SIDEBAR);
-			
-			Score score2 = o.getScore(ChatColor.YELLOW + "Welkom, " + ChatColor.GRAY + player.getName());
-			score2.setScore(2);
-			
-			Score score1 = o.getScore("");
-			score1.setScore(1);
-			
-			Score score0 = o.getScore(ChatColor.GOLD + "IP: " + ChatColor.GREEN + "VPS.LucasRidder.NL");
-			score0.setScore(0);
-			
-			player.setScoreboard(b);
+		new BukkitRunnable(){
+			public void run(){
+				ScoreboardManager manager = Bukkit.getScoreboardManager();
+				Scoreboard b = manager.getNewScoreboard();
+				int spelers = getServer().getOnlinePlayers().size();
+
+				Objective o = b.registerNewObjective("Gold", "", ChatColor.BOLD + "" + ChatColor.BLUE + "Lobby");
+				o.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+				Score score4 = o.getScore(ChatColor.YELLOW + "Welkom, " + ChatColor.GRAY + player.getName());
+				score4.setScore(4);
+
+				Score score3 = o.getScore(ChatColor.BOLD + "");
+				score3.setScore(3);
+
+				Score score2 = o.getScore(ChatColor.GOLD + "Aantal spelers online: " + spelers);
+				score2.setScore(2);
+
+				Score score1 = o.getScore("");
+				score1.setScore(1);
+
+				Score score0 = o.getScore(ChatColor.BOLD + "" + ChatColor.GREEN + "VPS.LucasRidder.NL");
+				score0.setScore(0);
+
+				player.setScoreboard(b);
+			}
+		}.runTaskTimer(this, 20, 20);
 			
 		//join message
 		if(player.isOp()) {
@@ -145,7 +157,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			player.sendMessage(ChatColor.BLUE + "Beschikbare servers: ");
 			player.sendMessage(ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/minigames");
 			player.sendMessage("");
-		} else if(!player.hasPlayedBefore()) {
+			} else if(!player.hasPlayedBefore()) {
 			e.setJoinMessage(ChatColor.DARK_GRAY + "Welkom " + ChatColor.RESET + name);
 			player.sendMessage("");
 			player.sendMessage("");
@@ -436,7 +448,15 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		ItemStack stack1 = new ItemStack(Material.GRASS_BLOCK);
 		ItemStack stack2 = new ItemStack(Material.DIAMOND_SWORD);
 		ItemStack stack3 = new ItemStack(Material.RED_WOOL);
-		if(e.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+		ItemMeta meta1 = stack1.getItemMeta();
+		ItemMeta meta2 = stack2.getItemMeta();
+		ItemMeta meta3 = stack3.getItemMeta();
+		meta1.setDisplayName(ChatColor.GOLD + "Join survival!");
+		meta2.setDisplayName(ChatColor.GOLD + "Join minigames!");
+		meta3.setDisplayName(ChatColor.GOLD + "Join pixelmon!");
+		stack1.setItemMeta(meta1);
+		stack2.setItemMeta(meta2);
+		stack3.setItemMeta(meta3);
 			if(player.getItemInHand().equals(stack1)) {
 				player.sendMessage(ChatColor.GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "survival");
 				//BUNGEE
@@ -464,7 +484,6 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			} else {
 				e.setCancelled(true);
 			}
-		}
 		}
 		}
 
