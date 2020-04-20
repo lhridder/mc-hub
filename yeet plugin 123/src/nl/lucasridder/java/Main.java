@@ -11,12 +11,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -73,14 +68,14 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		//player info
 		Player player = e.getPlayer();
 		String name = player.getName();
-		
+
 		//spawn loc
 			try {
-			int x = (int) this.getConfig().get("spawn.x");
-			int y = (int) this.getConfig().get("spawn.y");
-			int z = (int) this.getConfig().get("spawn.z");
-			float yaw = (float) this.getConfig().get("spawn.yaw");
-			float pitch = (float) this.getConfig().get("spawn.pitch");
+			int x = this.getConfig().getInt("spawn.x");
+			int y = this.getConfig().getInt("spawn.y");
+			int z = this.getConfig().getInt("spawn.z");
+			float yaw = (float) this.getConfig().getInt("spawn.yaw");
+			float pitch = (float) this.getConfig().getInt("spawn.pitch");
 			Location loc = new Location(player.getWorld(), x, y, z, yaw, pitch);
 			player.teleport(loc);
 			} catch(Exception e1){
@@ -116,13 +111,16 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				Objective o = b.registerNewObjective("Gold", "", ChatColor.BOLD + "" + ChatColor.BLUE + "Lobby");
 				o.setDisplaySlot(DisplaySlot.SIDEBAR);
 
+				Score score5 = o.getScore(ChatColor.YELLOW + "");
+				score5.setScore(5);
+
 				Score score4 = o.getScore(ChatColor.YELLOW + "Welkom, " + ChatColor.GRAY + player.getName());
 				score4.setScore(4);
 
 				Score score3 = o.getScore(ChatColor.BOLD + "");
 				score3.setScore(3);
 
-				Score score2 = o.getScore(ChatColor.GOLD + "Aantal spelers online: " + spelers);
+				Score score2 = o.getScore(ChatColor.GOLD + "Aantal spelers online: " + ChatColor.RED + spelers);
 				score2.setScore(2);
 
 				Score score1 = o.getScore("");
@@ -202,21 +200,20 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	}
 
 	//Leave
-	public void onPlayerLeave(PlayerQuitEvent e ) {
+	@EventHandler
+	public void onPlayerLeave(PlayerQuitEvent e) {
 		Player player = e.getPlayer();
 		String name = player.getName();
-		
+
 		if(player.isOp()) {
 			//stop melding
 			e.setQuitMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "-" + ChatColor.DARK_GRAY + "] " + ChatColor.RED + ChatColor.BOLD + name);
 			//zeg hoi
-
 		} else {
-			
 			e.setQuitMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "-" + ChatColor.DARK_GRAY + "] " + ChatColor.RESET + ChatColor.BOLD + name);
 		}
 	}
-	
+
 	//Admin Commands
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -503,18 +500,21 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	public void onDamage(EntityDamageEvent e) {
 		e.setCancelled(true);
 	}
-	
+
+	//Armorstand
+	@EventHandler
+	public void armorStand(PlayerArmorStandManipulateEvent e) {
+		//speler
+		Player player = e.getPlayer();
+		e.setCancelled(!player.isOp());
+	}
+
 	//Block break
 	@EventHandler
 	public void onBreak(BlockBreakEvent e) {
 		//speler
 		Player player = e.getPlayer();
-		
-		if(player.isOp()) {
-			e.setCancelled(false);
-		} else {
-			e.setCancelled(true);
-		}
+		e.setCancelled(!player.isOp());
 		
 	}
 	
