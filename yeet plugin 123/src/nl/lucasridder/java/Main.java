@@ -1,5 +1,8 @@
 package nl.lucasridder.java;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -18,19 +21,18 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
-
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
+import org.bukkit.scoreboard.*;
 
 
 public class Main extends JavaPlugin implements Listener, PluginMessageListener {
-	
+
+	//variabelen
+		int survival = 0;
+		int minigames = 0;
+		int lobby = 0;
+		int pixelmon = 0;
+		int all = 0;
+
 	//Start-up
 	@Override
 	public void onEnable() {
@@ -40,8 +42,10 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		
 		//stop tijd
 		World world = Bukkit.getServer().getWorld("world");
-	    world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-	    
+		if (world != null) {
+			world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+		}
+
 		//register events
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
 		
@@ -74,9 +78,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			int x = this.getConfig().getInt("spawn.x");
 			int y = this.getConfig().getInt("spawn.y");
 			int z = this.getConfig().getInt("spawn.z");
-			float yaw = (float) this.getConfig().getInt("spawn.yaw");
-			float pitch = (float) this.getConfig().getInt("spawn.pitch");
-			Location loc = new Location(player.getWorld(), x, y, z, yaw, pitch);
+			Location loc = new Location(player.getWorld(), x, y, z);
 			player.teleport(loc);
 			} catch(Exception e1){
 				e1.printStackTrace();
@@ -104,32 +106,37 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		//scoreboard
 		new BukkitRunnable(){
 			public void run(){
-				ScoreboardManager manager = Bukkit.getScoreboardManager();
-				Scoreboard b = manager.getNewScoreboard();
-				int spelers = getServer().getOnlinePlayers().size();
+				if (!player.isOnline()) {
+					this.cancel();
+				} else {
+					ScoreboardManager manager = Bukkit.getScoreboardManager();
+					Scoreboard b = manager.getNewScoreboard();
+					int spelers = getServer().getOnlinePlayers().size();
 
-				Objective o = b.registerNewObjective("Gold", "", ChatColor.BOLD + "" + ChatColor.BLUE + "Lobby");
-				o.setDisplaySlot(DisplaySlot.SIDEBAR);
+					Objective o = b.registerNewObjective("Gold", "", ChatColor.BOLD + "" + ChatColor.BLUE + "Lobby");
+					o.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-				Score score5 = o.getScore(ChatColor.YELLOW + "");
-				score5.setScore(5);
+					Score score5 = o.getScore(ChatColor.YELLOW + "");
+					score5.setScore(5);
 
-				Score score4 = o.getScore(ChatColor.YELLOW + "Welkom, " + ChatColor.GRAY + player.getName());
-				score4.setScore(4);
+					Score score4 = o.getScore(ChatColor.YELLOW + "Welkom, " + ChatColor.GRAY + player.getName());
+					score4.setScore(4);
 
-				Score score3 = o.getScore(ChatColor.BOLD + "");
-				score3.setScore(3);
+					Score score3 = o.getScore(ChatColor.BOLD + "");
+					score3.setScore(3);
 
-				Score score2 = o.getScore(ChatColor.GOLD + "Aantal spelers online: " + ChatColor.RED + spelers);
-				score2.setScore(2);
+					Score score2 = o.getScore(ChatColor.GOLD + "Aantal spelers online: " + ChatColor.RED + spelers);
+					score2.setScore(2);
 
-				Score score1 = o.getScore("");
-				score1.setScore(1);
+					Score score1 = o.getScore("");
+					score1.setScore(1);
 
-				Score score0 = o.getScore(ChatColor.BOLD + "" + ChatColor.GREEN + "VPS.LucasRidder.NL");
-				score0.setScore(0);
+					Score score0 = o.getScore(ChatColor.BOLD + "" + ChatColor.GREEN + "VPS.LucasRidder.NL");
+					score0.setScore(0);
 
-				player.setScoreboard(b);
+					player.setScoreboard(b);
+				}
+
 			}
 		}.runTaskTimer(this, 20, 20);
 			
@@ -260,9 +267,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 					player.setGameMode(GameMode.ADVENTURE);
 					sender.sendMessage(ChatColor.GREEN + "Gedaan.");
 					return true;
-				} else {
-					sender.sendMessage(ChatColor.RED + "/gamemode (creative/survival/spectator/adventure)/(0/1/2/3) (speler)");
-				}
+				} else sender.sendMessage(ChatColor.RED + "/gamemode (creative/survival/spectator/adventure)/(0/1/2/3) (speler)");
 				
 			}
 
@@ -386,31 +391,18 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	//Command
 	@EventHandler
 	public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
-		
 		String message = e.getMessage();
 		Player player = e.getPlayer();
-		
-		if(player.isOp()) {
-			//laat door
-			e.setCancelled(false);
-		} else {
-			// get string
-			
+		if (!player.isOp()) {
 			//help
 			if(message.startsWith("/help")) {
 				player.sendMessage(ChatColor.DARK_GRAY + "Zie hier de beschikbare commando's: ");
 				player.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.AQUA + "/server survival" + ChatColor.DARK_GRAY + " : " + ChatColor.GOLD + "Ga naar de survival server!" );
 				player.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.AQUA + "/server minigames" + ChatColor.DARK_GRAY + " : " + ChatColor.GOLD + "Ga naar de minigames server!" );
 				e.setCancelled(true);
-			} else if(message.equalsIgnoreCase("/survival")) {
-				e.setCancelled(false);
-			} else if(message.equalsIgnoreCase("/minigames")) {
-				e.setCancelled(false);
-			} else {
-				e.setCancelled(true);
-			}
+			} else if(message.equalsIgnoreCase("/survival")) { e.setCancelled(false);
+			} else e.setCancelled(!message.equalsIgnoreCase("/minigames"));
 		}
-		
 	}
 
 	//Chat
@@ -425,21 +417,9 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			e.setFormat(ChatColor.GRAY + name + ChatColor.DARK_GRAY + " >> " + ChatColor.RESET + message);
 		}
 	}
-	
-	//Drop
-	@EventHandler
-	public void onDrop(PlayerDropItemEvent e) {
-		Player player = (Player) e.getPlayer();
-		if(player.isOp()) {
-			//niks
-		} else {
-			e.setCancelled(true);
-		}
-	}
-	
+
 	//Interact
 	@EventHandler
-	@SuppressWarnings("deprecation")
 	public void onInteract(PlayerInteractEvent e) {
 		Player player = e.getPlayer();
 		ItemStack stack1 = new ItemStack(Material.GRASS_BLOCK);
@@ -454,102 +434,84 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		stack1.setItemMeta(meta1);
 		stack2.setItemMeta(meta2);
 		stack3.setItemMeta(meta3);
-			if(player.getItemInHand().equals(stack1)) {
-				player.sendMessage(ChatColor.GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "survival");
-				//BUNGEE
-				ByteArrayDataOutput out = ByteStreams.newDataOutput();
-				  out.writeUTF("Connect");
-				  out.writeUTF("survival");
-				player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-			} else if(player.getItemInHand().equals(stack2)) {
-				player.sendMessage(ChatColor.GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "minigames");
-				//BUNGEE
-				ByteArrayDataOutput out = ByteStreams.newDataOutput();
-				  out.writeUTF("Connect");
-				  out.writeUTF("minigames");
-				player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-			} else if(player.getItemInHand().equals(stack3)) {
-				player.sendMessage(ChatColor.GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "pixelmon");
-				//BUNGEE
-				ByteArrayDataOutput out = ByteStreams.newDataOutput();
-				  out.writeUTF("Connect");
-				  out.writeUTF("sponge");
-				player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-		} else {
-			if(player.isOp()) {
-				//niks
+
+		if(e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) {
+			if(player.getInventory().getItemInMainHand().equals(stack1)) {
+					player.sendMessage(ChatColor.GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "survival");
+					//BUNGEE
+					ByteArrayDataOutput out = ByteStreams.newDataOutput();
+					  out.writeUTF("Connect");
+					  out.writeUTF("survival");
+					player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
+				} else if(player.getInventory().getItemInMainHand().equals(stack2)) {
+					player.sendMessage(ChatColor.GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "minigames");
+					//BUNGEE
+					ByteArrayDataOutput out = ByteStreams.newDataOutput();
+					  out.writeUTF("Connect");
+					  out.writeUTF("minigames");
+					player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
+				} else if(player.getInventory().getItemInMainHand().equals(stack3)) {
+					player.sendMessage(ChatColor.GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "pixelmon");
+					//BUNGEE
+					ByteArrayDataOutput out = ByteStreams.newDataOutput();
+					  out.writeUTF("Connect");
+					  out.writeUTF("sponge");
+					player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
 			} else {
-				e.setCancelled(true);
+				if (!player.isOp()) { e.setCancelled(true); }
 			}
 		}
 		}
 
+	//Drop
+	@EventHandler
+	public void onDrop(PlayerDropItemEvent e) { e.setCancelled(!e.getPlayer().isOp()); }
+
 	//Inv click
 	@EventHandler
-	public void onClick(InventoryClickEvent e) {
-		Player player = (Player) e.getWhoClicked();
-		if(player.isOp()) {
-			e.setCancelled(false);
-		} else {
-			e.setCancelled(true);
-		}
-	}
+	public void onClick(InventoryClickEvent e) { e.setCancelled(!e.getWhoClicked().isOp()); }
 	
 	//No Damage
 	@EventHandler
-	public void onDamage(EntityDamageEvent e) {
-		e.setCancelled(true);
-	}
+	public void onDamage(EntityDamageEvent e) { e.setCancelled(true); }
 
 	//Armorstand
 	@EventHandler
-	public void armorStand(PlayerArmorStandManipulateEvent e) {
-		//speler
-		Player player = e.getPlayer();
-		e.setCancelled(!player.isOp());
-	}
+	public void armorStand(PlayerArmorStandManipulateEvent e) { e.setCancelled(!e.getPlayer().isOp()); }
 
 	//Block break
 	@EventHandler
-	public void onBreak(BlockBreakEvent e) {
-		//speler
-		Player player = e.getPlayer();
-		e.setCancelled(!player.isOp());
-		
-	}
+	public void onBreak(BlockBreakEvent e) { e.setCancelled(!e.getPlayer().isOp()); }
 	
 	//Block place
 	@EventHandler
-	public void onPlace(BlockPlaceEvent e) {
-		//speler
-		Player player = e.getPlayer();
-				
-		if(player.isOp()) {
-			e.setCancelled(false);
-		} else {
-			e.setCancelled(true);
-		}
-	}
+	public void onPlace(BlockPlaceEvent e) { e.setCancelled(!e.getPlayer().isOp()); }
 	
 	//Weer
 	@EventHandler
-	public void onWeatherChange(WeatherChangeEvent e){
-	  e.setCancelled(e.toWeatherState());
-	}
+	public void onWeatherChange(WeatherChangeEvent e){ e.setCancelled(e.toWeatherState()); }
 
 	//Listener bungee
 	@Override
 	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-	    if (!channel.equals("BungeeCord")) {
-	      return;
-	    }
-	    ByteArrayDataInput in = ByteStreams.newDataInput(message);
-	    String subchannel = in.readUTF();
-	    if (subchannel.equals("SomeSubChannel")) {
-	      // Use the code sample in the 'Response' sections below to read
-	      // the data.
-	    }
-	  }
+		if (!channel.equals("BungeeCord")) return;
+		if (!player.isOnline()) {
+			ByteArrayDataInput in = ByteStreams.newDataInput(message);
+			String subchannel = in.readUTF();
+
+			if (subchannel.equals("PlayerCount")) {
+				@SuppressWarnings("unused")
+				String server = in.readUTF();
+				if (server.equalsIgnoreCase("lobby")) this.lobby = in.readInt();
+				if (server.equalsIgnoreCase("ALL")) this.all = in.readInt();
+				if (server.equalsIgnoreCase("survival")) this.survival = in.readInt();
+				if (server.equalsIgnoreCase("sponge")) this.pixelmon = in.readInt();
+				if (server.equalsIgnoreCase("minigames")) this.minigames = in.readInt();
+
+				System.out.println("lobby:" + lobby + " survival: " + survival + " pixelmon: " + pixelmon + " minigames: " + minigames + " ALL: " + all);
+			}
+		}
+	}
 	
 	
 }
