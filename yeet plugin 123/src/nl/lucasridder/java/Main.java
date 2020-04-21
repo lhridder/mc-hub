@@ -1,7 +1,6 @@
 package nl.lucasridder.java;
 
 import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -23,6 +22,8 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 
+import java.io.*;
+
 
 public class Main extends JavaPlugin implements Listener, PluginMessageListener {
 
@@ -37,10 +38,15 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	public void sendServer(String server, Player player) {
 		player.sendMessage(ChatColor.DARK_GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + server);
 		//BUNGEE
-		@SuppressWarnings("UnstableApiUsage") ByteArrayDataOutput out = ByteStreams.newDataOutput();
-		out.writeUTF("Connect");
-		out.writeUTF(server);
-		player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
+		ByteArrayOutputStream b = new ByteArrayOutputStream();
+		DataOutputStream out = new DataOutputStream(b);
+		try {
+			out.writeUTF("Connect");
+			out.writeUTF(server);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		player.sendPluginMessage(this, "BungeeCord", b.toByteArray());
 	}
 
 	//Start-up
@@ -493,6 +499,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			String subchannel = in.readUTF();
 
 			if (subchannel.equals("PlayerCount")) {
+				@SuppressWarnings("unused")
 				String server = in.readUTF();
 				if (server.equalsIgnoreCase("lobby")) this.lobby = in.readInt();
 				if (server.equalsIgnoreCase("ALL")) this.all = in.readInt();
@@ -504,6 +511,5 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			}
 		}
 	}
-	
-	
+
 }
