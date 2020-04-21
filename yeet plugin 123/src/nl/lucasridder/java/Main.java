@@ -5,6 +5,7 @@ import com.google.common.io.ByteStreams;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.libs.org.apache.commons.io.output.ByteArrayOutputStream;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,8 +22,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
-
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Objects;
 
 
 public class Main extends JavaPlugin implements Listener, PluginMessageListener {
@@ -33,6 +35,8 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		int lobby = 0;
 		int pixelmon = 0;
 		int all = 0;
+		boolean lock;
+		String lockreason = "";
 
 	//send server
 	public void sendServer(String server, Player player) {
@@ -79,28 +83,41 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		this.saveConfig();
 		System.out.println("[HUB]" + ChatColor.GREEN + " succesfully disabled");
 		// shut down plugin
+		for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
+			Scoreboard scoreboard = null;
+			onlinePlayers.setScoreboard(scoreboard);
+		}
 	}
 	
 	//Join
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
-		
 		//player info
 		Player player = e.getPlayer();
 		String name = player.getName();
 
-		//spawn loc
+		//lock
+		if(!player.isOp()) {
+			if (lock) {
+				player.kickPlayer(ChatColor.GRAY + "De server is momenteel in lockdown vanwege:" +
+						ChatColor.BLUE + lockreason +
+						ChatColor.YELLOW + "Zie actuele status via: " + ChatColor.AQUA + "https://www.discord.gg/AzVCaQE");
+				return;
+			}
+
+
+			//spawn loc
 			try {
-			int x = this.getConfig().getInt("spawn.x");
-			int y = this.getConfig().getInt("spawn.y");
-			int z = this.getConfig().getInt("spawn.z");
-			Location loc = new Location(player.getWorld(), x, y, z);
-			player.teleport(loc);
-			} catch(Exception e1){
+				int x = this.getConfig().getInt("spawn.x");
+				int y = this.getConfig().getInt("spawn.y");
+				int z = this.getConfig().getInt("spawn.z");
+				Location loc = new Location(player.getWorld(), x, y, z);
+				player.teleport(loc);
+			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
-			
-		//set inv
+
+			//set inv
 			player.getInventory().clear();
 			ItemStack stack1 = new ItemStack(Material.GRASS_BLOCK);
 			ItemStack stack2 = new ItemStack(Material.DIAMOND_SWORD);
@@ -119,107 +136,110 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			player.getInventory().setItem(5, stack3);
 			player.updateInventory();
 
-		//scoreboard
-		new BukkitRunnable(){
-			public void run(){
-				if (!player.isOnline()) {
-					this.cancel();
-				} else {
-					ScoreboardManager manager = Bukkit.getScoreboardManager();
-					Scoreboard b = manager.getNewScoreboard();
-					int spelers = getServer().getOnlinePlayers().size();
+			//scoreboard
+			new BukkitRunnable() {
+				public void run() {
+					if (!player.isOnline()) {
+						this.cancel();
+					} else {
+						ScoreboardManager manager = Bukkit.getScoreboardManager();
+						Scoreboard b = manager.getNewScoreboard();
+						int spelers = getServer().getOnlinePlayers().size();
 
-					Objective o = b.registerNewObjective("Gold", "", ChatColor.BOLD + "" + ChatColor.BLUE + "Lobby");
-					o.setDisplaySlot(DisplaySlot.SIDEBAR);
+						Objective o = b.registerNewObjective("Gold", "", ChatColor.BOLD + "" + ChatColor.BLUE + "Lobby");
+						o.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-					Score score5 = o.getScore(ChatColor.YELLOW + "");
-					score5.setScore(5);
+						Score score5 = o.getScore(ChatColor.YELLOW + "");
+						score5.setScore(5);
 
-					Score score4 = o.getScore(ChatColor.YELLOW + "Welkom, " + ChatColor.GRAY + player.getName());
-					score4.setScore(4);
+						Score score4 = o.getScore(ChatColor.YELLOW + "Welkom, " + ChatColor.GRAY + player.getName());
+						score4.setScore(4);
 
-					Score score3 = o.getScore(ChatColor.BOLD + "");
-					score3.setScore(3);
+						Score score3 = o.getScore(ChatColor.BOLD + "");
+						score3.setScore(3);
 
-					Score score2 = o.getScore(ChatColor.GOLD + "Aantal spelers online: " + ChatColor.RED + spelers);
-					score2.setScore(2);
+						Score score2 = o.getScore(ChatColor.GOLD + "Aantal spelers online: " + ChatColor.RED + spelers);
+						score2.setScore(2);
 
-					Score score1 = o.getScore("");
-					score1.setScore(1);
+						Score score1 = o.getScore("");
+						score1.setScore(1);
 
-					Score score0 = o.getScore(ChatColor.BOLD + "" + ChatColor.GREEN + "VPS.LucasRidder.NL");
-					score0.setScore(0);
+						Score score0 = o.getScore(ChatColor.BOLD + "" + ChatColor.GREEN + "VPS.LucasRidder.NL");
+						score0.setScore(0);
 
-					player.setScoreboard(b);
+						player.setScoreboard(b);
+					}
+
 				}
+			}.runTaskTimer(this, 20, 20);
 
+			//join message
+			if (player.isOp()) {
+				//stop melding
+				e.setJoinMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "+" + ChatColor.DARK_GRAY + "] " + ChatColor.RED + name);
+				//zeg hoi
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage(ChatColor.WHITE + "   Welkom, " + ChatColor.GOLD + name);
+				player.sendMessage(ChatColor.WHITE + "   Jij bent een " + ChatColor.GOLD + "Admin");
+				player.sendMessage(ChatColor.BLUE + "   Beschikbare servers: ");
+				player.sendMessage(ChatColor.GOLD + "   /survival" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/minigames");
+				player.sendMessage("");
+				if (lock) {
+					player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Lockdown bypassed: " + lockreason);
+				}
+			} else if (!player.hasPlayedBefore()) {
+				e.setJoinMessage(ChatColor.DARK_GRAY + "Welkom " + ChatColor.RESET + name);
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage(ChatColor.DARK_GRAY + "Welkom, " + ChatColor.GOLD + name);
+				player.sendMessage(ChatColor.BLUE + "Beschikbare servers: ");
+				player.sendMessage(ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/minigames");
+				player.sendMessage("");
+				player.sendMessage("");
+			} else {
+				e.setJoinMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "+" + ChatColor.DARK_GRAY + "] " + ChatColor.RESET + name);
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage("");
+				player.sendMessage(ChatColor.DARK_GRAY + "Welkom, " + ChatColor.GOLD + name);
+				player.sendMessage(ChatColor.BLUE + "Beschikbare servers: ");
+				player.sendMessage(ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/minigames");
+				player.sendMessage("");
+				player.sendMessage("");
 			}
-		}.runTaskTimer(this, 20, 20);
-			
-		//join message
-		if(player.isOp()) {
-			//stop melding
-			e.setJoinMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "+" + ChatColor.DARK_GRAY + "] " + ChatColor.RED + name);
-			//zeg hoi
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage(ChatColor.DARK_GRAY + "Welkom, " + ChatColor.GOLD + name);
-			player.sendMessage(ChatColor.DARK_GRAY + "Jij bent een " + ChatColor.GOLD + "Admin" );
-			player.sendMessage(ChatColor.BLUE + "Beschikbare servers: ");
-			player.sendMessage(ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/minigames");
-			player.sendMessage("");
-			} else if(!player.hasPlayedBefore()) {
-			e.setJoinMessage(ChatColor.DARK_GRAY + "Welkom " + ChatColor.RESET + name);
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage(ChatColor.DARK_GRAY + "Welkom, " + ChatColor.GOLD + name);
-			player.sendMessage(ChatColor.BLUE + "Beschikbare servers: ");
-			player.sendMessage(ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/minigames");
-			player.sendMessage("");
-			player.sendMessage("");
-		} else {
-			e.setJoinMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "+" + ChatColor.DARK_GRAY + "] " + ChatColor.RESET + name);
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage("");
-			player.sendMessage(ChatColor.DARK_GRAY + "Welkom, " + ChatColor.GOLD + name);
-			player.sendMessage(ChatColor.BLUE + "Beschikbare servers: ");
-			player.sendMessage(ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/minigames");
-			player.sendMessage("");
-			player.sendMessage("");
 		}
-		
 	}
 
 	//Leave
@@ -397,6 +417,17 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			} else {
 				sendServer("sponge", (Player) sender);
 			}
+		}
+
+		//lock
+		if(cmd.getName().equalsIgnoreCase("lock")) {
+			StringBuilder sb = new StringBuilder();
+			for (int i = 1; i < args.length; i++){
+				sb.append(args[i]).append(" ");
+			}
+			String lockreason = sb.toString().trim();
+			sender.sendMessage(ChatColor.GREEN + "Gelukt met reden: " + ChatColor.GOLD + lockreason);
+			this.lockreason = lockreason;
 		}
 		return true;
 	}
