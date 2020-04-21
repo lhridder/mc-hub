@@ -33,6 +33,16 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		int pixelmon = 0;
 		int all = 0;
 
+	//send server
+	public void sendServer(String server, Player player) {
+		player.sendMessage(ChatColor.DARK_GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + server);
+		//BUNGEE
+		@SuppressWarnings("UnstableApiUsage") ByteArrayDataOutput out = ByteStreams.newDataOutput();
+		out.writeUTF("Connect");
+		out.writeUTF(server);
+		player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
+	}
+
 	//Start-up
 	@Override
 	public void onEnable() {
@@ -222,6 +232,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	}
 
 	//Admin Commands
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		
@@ -233,77 +244,76 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				sender.sendMessage(ChatColor.RED + "Je bent geen speler");
 				return true;
 			} else {
-			
-			//te weinig argumenten
-			if(args.length == 0) {
-				sender.sendMessage(ChatColor.RED + "/gamemode (creative/survival/spectator/adventure)/(0/1/2/3) (speler)");
-				return true;
-			}
-			
-			//teveel argumenten
-			if(args.length > 2) {
-				sender.sendMessage(ChatColor.RED + "/gamemode (creative/survival/spectator/adventure)/(0/1/2/3) (speler)");
-				return true;
-			}
-			
-			//goede aantal argumenten
-			if(args.length == 1 ) {
-				//pak speler
-				Player player = (Player) sender;
-				
-				if(args[0].equalsIgnoreCase("creative") | args[0].equalsIgnoreCase("1")) {
-					player.setGameMode(GameMode.CREATIVE);
-					sender.sendMessage(ChatColor.GREEN + "Gedaan.");
-					return true;
-				} else if(args[0].equalsIgnoreCase("survival") | args[0].equalsIgnoreCase("0")) {
-					player.setGameMode(GameMode.SURVIVAL);
-					sender.sendMessage(ChatColor.GREEN + "Gedaan.");
-					return true;
-				} else if(args[0].equalsIgnoreCase("spectator") | args[0].equalsIgnoreCase("3")) {
-					player.setGameMode(GameMode.SPECTATOR);
-					sender.sendMessage(ChatColor.GREEN + "Gedaan.");
-					return true;
-				} else if(args[0].equalsIgnoreCase("adventure") | args[0].equalsIgnoreCase("2")) {
-					player.setGameMode(GameMode.ADVENTURE);
-					sender.sendMessage(ChatColor.GREEN + "Gedaan.");
-					return true;
-				} else sender.sendMessage(ChatColor.RED + "/gamemode (creative/survival/spectator/adventure)/(0/1/2/3) (speler)");
-				
-			}
-
-			//andere speler
-			if(args.length == 2 ) {
-				//pak speler
-				Player target = Bukkit.getServer().getPlayer(args[2]);
-				if(target == null) {
-					sender.sendMessage(ChatColor.RED + "Doel is niet online");
-				} else {
-				
-				if(args[0].equalsIgnoreCase("creative") | args[0].equalsIgnoreCase("1")) {
-					target.setGameMode(GameMode.CREATIVE);
-					target.sendMessage(ChatColor.GREEN + "Gamemode aangepast.");
-					sender.sendMessage(ChatColor.GREEN + "Gedaan.");
-					return true;
-				} else if(args[0].equalsIgnoreCase("survival") | args[0].equalsIgnoreCase("0")) {
-					target.setGameMode(GameMode.SURVIVAL);
-					target.sendMessage(ChatColor.GREEN + "Gamemode aangepast.");
-					sender.sendMessage(ChatColor.GREEN + "Gedaan.");
-					return true;
-				} else if(args[0].equalsIgnoreCase("spectator") | args[0].equalsIgnoreCase("3")) {
-					target.setGameMode(GameMode.SPECTATOR);
-					target.sendMessage(ChatColor.GREEN + "Gamemode aangepast.");
-					sender.sendMessage(ChatColor.GREEN + "Gedaan.");
-					return true;
-				} else if(args[0].equalsIgnoreCase("adventure") | args[0].equalsIgnoreCase("2")) {
-					target.setGameMode(GameMode.ADVENTURE);
-					target.sendMessage(ChatColor.GREEN + "Gamemode aangepast.");
-					sender.sendMessage(ChatColor.GREEN + "Gedaan.");
-					return true;
-				} else {
+				//te weinig argumenten
+				if(args.length == 0) {
 					sender.sendMessage(ChatColor.RED + "/gamemode (creative/survival/spectator/adventure)/(0/1/2/3) (speler)");
+					return true;
 				}
+
+				//teveel argumenten
+				if(args.length > 2) {
+					sender.sendMessage(ChatColor.RED + "/gamemode (creative/survival/spectator/adventure)/(0/1/2/3) (speler)");
+					return true;
 				}
-			}
+
+				//goede aantal argumenten
+				if(args.length == 1 ) {
+					//pak speler
+					Player player = (Player) sender;
+
+					if(args[0].equalsIgnoreCase("creative") | args[0].equalsIgnoreCase("1")) {
+						player.setGameMode(GameMode.CREATIVE);
+						sender.sendMessage(ChatColor.GREEN + "Gedaan.");
+						return true;
+					} else if(args[0].equalsIgnoreCase("survival") | args[0].equalsIgnoreCase("0")) {
+						player.setGameMode(GameMode.SURVIVAL);
+						sender.sendMessage(ChatColor.GREEN + "Gedaan.");
+						return true;
+					} else if(args[0].equalsIgnoreCase("spectator") | args[0].equalsIgnoreCase("3")) {
+						player.setGameMode(GameMode.SPECTATOR);
+						sender.sendMessage(ChatColor.GREEN + "Gedaan.");
+						return true;
+					} else if(args[0].equalsIgnoreCase("adventure") | args[0].equalsIgnoreCase("2")) {
+						player.setGameMode(GameMode.ADVENTURE);
+						sender.sendMessage(ChatColor.GREEN + "Gedaan.");
+						return true;
+					} else sender.sendMessage(ChatColor.RED + "/gamemode (creative/survival/spectator/adventure)/(0/1/2/3) (speler)");
+
+				}
+
+				//andere speler
+				if(args.length == 2 ) {
+					//pak speler
+					Player target = Bukkit.getServer().getPlayer(args[1]);
+					if(target == null) {
+						sender.sendMessage(ChatColor.RED + "Doel is niet online");
+					} else {
+
+					if(args[0].equalsIgnoreCase("creative") | args[0].equalsIgnoreCase("1")) {
+						target.setGameMode(GameMode.CREATIVE);
+						target.sendMessage(ChatColor.GREEN + "Gamemode aangepast.");
+						sender.sendMessage(ChatColor.GREEN + "Gedaan.");
+						return true;
+					} else if(args[0].equalsIgnoreCase("survival") | args[0].equalsIgnoreCase("0")) {
+						target.setGameMode(GameMode.SURVIVAL);
+						target.sendMessage(ChatColor.GREEN + "Gamemode aangepast.");
+						sender.sendMessage(ChatColor.GREEN + "Gedaan.");
+						return true;
+					} else if(args[0].equalsIgnoreCase("spectator") | args[0].equalsIgnoreCase("3")) {
+						target.setGameMode(GameMode.SPECTATOR);
+						target.sendMessage(ChatColor.GREEN + "Gamemode aangepast.");
+						sender.sendMessage(ChatColor.GREEN + "Gedaan.");
+						return true;
+					} else if(args[0].equalsIgnoreCase("adventure") | args[0].equalsIgnoreCase("2")) {
+						target.setGameMode(GameMode.ADVENTURE);
+						target.sendMessage(ChatColor.GREEN + "Gamemode aangepast.");
+						sender.sendMessage(ChatColor.GREEN + "Gedaan.");
+						return true;
+					} else {
+						sender.sendMessage(ChatColor.RED + "/gamemode (creative/survival/spectator/adventure)/(0/1/2/3) (speler)");
+					}
+					}
+				}
 			}
 		}
 		
@@ -357,14 +367,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 					sender.sendMessage(ChatColor.RED + "Je bent geen speler");
 					return true;
 				} else {
-			
-			sender.sendMessage(ChatColor.DARK_GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "survival");
-			Player player = (Player) sender;
-			//BUNGEE
-			ByteArrayDataOutput out = ByteStreams.newDataOutput();
-			  out.writeUTF("Connect");
-			  out.writeUTF("survival");
-			player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
+			sendServer("survival", (Player) sender);
 				}
 		}
 		
@@ -375,17 +378,21 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 					sender.sendMessage(ChatColor.RED + "Je bent geen speler");
 					return true;
 				} else {
-			
-			sender.sendMessage(ChatColor.DARK_GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "minigames");
-			Player player = (Player) sender;
-			//BUNGEE
-			ByteArrayDataOutput out = ByteStreams.newDataOutput();
-			  out.writeUTF("Connect");
-			  out.writeUTF("minigames");
-			player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
+				sendServer("minigames", (Player) sender);
+			}
 		}
+
+		//pixelmon
+		if(cmd.getName().equalsIgnoreCase("pixelmon")) {
+			if(!(sender instanceof Player)) {
+				//zeg het
+				sender.sendMessage(ChatColor.RED + "Je bent geen speler");
+				return true;
+			} else {
+				sendServer("sponge", (Player) sender);
+			}
 		}
-		return false;
+		return true;
 	}
 	
 	//Command
@@ -437,26 +444,11 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 
 		if(e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) {
 			if(player.getInventory().getItemInMainHand().equals(stack1)) {
-					player.sendMessage(ChatColor.GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "survival");
-					//BUNGEE
-					ByteArrayDataOutput out = ByteStreams.newDataOutput();
-					  out.writeUTF("Connect");
-					  out.writeUTF("survival");
-					player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
+				sendServer("survival", player);
 				} else if(player.getInventory().getItemInMainHand().equals(stack2)) {
-					player.sendMessage(ChatColor.GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "minigames");
-					//BUNGEE
-					ByteArrayDataOutput out = ByteStreams.newDataOutput();
-					  out.writeUTF("Connect");
-					  out.writeUTF("minigames");
-					player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
+				sendServer("minigames", player);
 				} else if(player.getInventory().getItemInMainHand().equals(stack3)) {
-					player.sendMessage(ChatColor.GRAY + "Je wordt nu doorverbonden naar: " + ChatColor.GOLD + "pixelmon");
-					//BUNGEE
-					ByteArrayDataOutput out = ByteStreams.newDataOutput();
-					  out.writeUTF("Connect");
-					  out.writeUTF("sponge");
-					player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
+				sendServer("sponge", player);
 			} else {
 				if (!player.isOp()) { e.setCancelled(true); }
 			}
@@ -492,15 +484,15 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	public void onWeatherChange(WeatherChangeEvent e){ e.setCancelled(e.toWeatherState()); }
 
 	//Listener bungee
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
 		if (!channel.equals("BungeeCord")) return;
 		if (!player.isOnline()) {
-			ByteArrayDataInput in = ByteStreams.newDataInput(message);
+			@SuppressWarnings("UnstableApiUsage") ByteArrayDataInput in = ByteStreams.newDataInput(message);
 			String subchannel = in.readUTF();
 
 			if (subchannel.equals("PlayerCount")) {
-				@SuppressWarnings("unused")
 				String server = in.readUTF();
 				if (server.equalsIgnoreCase("lobby")) this.lobby = in.readInt();
 				if (server.equalsIgnoreCase("ALL")) this.all = in.readInt();
