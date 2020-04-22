@@ -457,8 +457,9 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			//help
 			if(message.startsWith("/help")) {
 				player.sendMessage(ChatColor.DARK_GRAY + "Zie hier de beschikbare commando's: ");
-				player.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.AQUA + "/server survival" + ChatColor.DARK_GRAY + " : " + ChatColor.GOLD + "Ga naar de survival server!" );
-				player.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.AQUA + "/server minigames" + ChatColor.DARK_GRAY + " : " + ChatColor.GOLD + "Ga naar de minigames server!" );
+				player.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.AQUA + "/survival" + ChatColor.DARK_GRAY + " : " + ChatColor.GOLD + "Ga naar de survival server!" );
+				player.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.AQUA + "/minigames" + ChatColor.DARK_GRAY + " : " + ChatColor.GOLD + "Ga naar de minigames server!" );
+				player.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.AQUA + "/pixelmon" + ChatColor.DARK_GRAY + " : " + ChatColor.GOLD + "Ga naar de pixelmon server!" );
 				e.setCancelled(true);
 			} else if(message.equalsIgnoreCase("/survival")) { e.setCancelled(false);
 			} else e.setCancelled(!message.equalsIgnoreCase("/minigames"));
