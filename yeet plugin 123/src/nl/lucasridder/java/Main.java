@@ -13,6 +13,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -22,9 +23,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Objects;
 
 
 public class Main extends JavaPlugin implements Listener, PluginMessageListener {
@@ -36,7 +37,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		int pixelmon = 0;
 		int all = 0;
 		boolean lock;
-		String lockreason = "";
+		String lockreason;
 
 	//send server
 	public void sendServer(String server, Player player) {
@@ -47,6 +48,20 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		try {
 			out.writeUTF("Connect");
 			out.writeUTF(server);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		player.sendPluginMessage(this, "BungeeCord", b.toByteArray());
+	}
+
+	//playercount
+	public void sendServer(Player player) {
+		//BUNGEE
+		ByteArrayOutputStream b = new ByteArrayOutputStream();
+		DataOutputStream out = new DataOutputStream(b);
+		try {
+			out.writeUTF("PlayerCount");
+			out.writeUTF("survival");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -88,25 +103,22 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			onlinePlayers.setScoreboard(scoreboard);
 		}
 	}
-	
+
 	//Join
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
-		//player info
 		Player player = e.getPlayer();
 		String name = player.getName();
-
 		//lock
 		if(!player.isOp()) {
-			if (lock) {
-				player.kickPlayer(ChatColor.GRAY + "De server is momenteel in lockdown vanwege:" +
-						ChatColor.BLUE + lockreason +
+			if (this.lock) {
+				player.kickPlayer(ChatColor.GRAY + "De server is momenteel in lockdown vanwege:" + "\n" +
+						ChatColor.BLUE + this.lockreason + "\n" +
 						ChatColor.YELLOW + "Zie actuele status via: " + ChatColor.AQUA + "https://www.discord.gg/AzVCaQE");
-				return;
 			}
+		}
 
-
-			//spawn loc
+		//spawn loc
 			try {
 				int x = this.getConfig().getInt("spawn.x");
 				int y = this.getConfig().getInt("spawn.y");
@@ -240,20 +252,16 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				player.sendMessage("");
 			}
 		}
-	}
 
 	//Leave
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent e) {
 		Player player = e.getPlayer();
 		String name = player.getName();
-
 		if(player.isOp()) {
-			//stop melding
-			e.setQuitMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "-" + ChatColor.DARK_GRAY + "] " + ChatColor.RED + ChatColor.BOLD + name);
-			//zeg hoi
+			e.setQuitMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "-" + ChatColor.DARK_GRAY + "] " + ChatColor.RED + name);
 		} else {
-			e.setQuitMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "-" + ChatColor.DARK_GRAY + "] " + ChatColor.RESET + ChatColor.BOLD + name);
+			e.setQuitMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "-" + ChatColor.DARK_GRAY + "] " + ChatColor.RESET + name);
 		}
 	}
 
@@ -421,14 +429,22 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 
 		//lock
 		if(cmd.getName().equalsIgnoreCase("lock")) {
-			StringBuilder sb = new StringBuilder();
-			for (int i = 1; i < args.length; i++){
-				sb.append(args[i]).append(" ");
+			if(!this.lock) {
+				lock = true;
+				if (args.length == 0) {
+					this.lockreason = "onbekend";
+					sender.sendMessage(ChatColor.GRAY + "Lockdown: " + ChatColor.GOLD + lock);
+				} else {
+					this.lockreason = args[0];
+					sender.sendMessage(ChatColor.GRAY + "Lockdown: " + ChatColor.GOLD + lock);
+					sender.sendMessage(ChatColor.GRAY + "Reden: " + ChatColor.GOLD + this.lockreason);
+				}
+			} else {
+				this.lock = false;
+				sender.sendMessage(ChatColor.GREEN + "Lockdown opgeheven");
 			}
-			String lockreason = sb.toString().trim();
-			sender.sendMessage(ChatColor.GREEN + "Gelukt met reden: " + ChatColor.GOLD + lockreason);
-			this.lockreason = lockreason;
 		}
+
 		return true;
 	}
 	
@@ -491,6 +507,11 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			}
 		}
 		}
+
+	//Crop break
+	public void onEntityInteract(EntityInteractEvent e) {
+		if (e.getBlock().getType() == Material.FARMLAND && e.getEntity() instanceof Player) e.setCancelled(true);
+	}
 
 	//Drop
 	@EventHandler
