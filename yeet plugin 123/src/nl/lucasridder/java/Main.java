@@ -71,6 +71,77 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		player.sendPluginMessage(this, "BungeeCord", b.toByteArray());
 	}
 
+	//inventory
+	public void setInventory(Player player) {
+		player.getInventory().clear();
+		ItemStack stack1 = new ItemStack(Material.GRASS_BLOCK);
+		ItemStack stack2 = new ItemStack(Material.DIAMOND_SWORD);
+		ItemStack stack3 = new ItemStack(Material.RED_WOOL);
+		ItemMeta meta1 = stack1.getItemMeta();
+		ItemMeta meta2 = stack2.getItemMeta();
+		ItemMeta meta3 = stack3.getItemMeta();
+		meta1.setDisplayName(ChatColor.GOLD + "Join survival!");
+		meta2.setDisplayName(ChatColor.GOLD + "Join minigames!");
+		meta3.setDisplayName(ChatColor.GOLD + "Join pixelmon!");
+		stack1.setItemMeta(meta1);
+		stack2.setItemMeta(meta2);
+		stack3.setItemMeta(meta3);
+		player.getInventory().setItem(3, stack1);
+		player.getInventory().setItem(4, stack2);
+		player.getInventory().setItem(5, stack3);
+		player.updateInventory();
+	}
+
+	//update scoreboard
+	public void updateScoreboard(Player player) {
+		ScoreboardManager manager = Bukkit.getScoreboardManager();
+		Scoreboard b = manager.getNewScoreboard();
+		int spelers = getServer().getOnlinePlayers().size();
+
+		Objective o = b.registerNewObjective("Gold", "", ChatColor.BOLD + "" + ChatColor.BLUE + "Lobby");
+		o.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+		Score score5 = o.getScore(ChatColor.YELLOW + "");
+		score5.setScore(5);
+
+		Score score4 = o.getScore(ChatColor.YELLOW + "Welkom, " + ChatColor.GRAY + player.getName());
+		score4.setScore(4);
+
+		Score score3 = o.getScore(ChatColor.BOLD + "");
+		score3.setScore(3);
+
+		Score score2 = o.getScore(ChatColor.GOLD + "Aantal spelers online: " + ChatColor.RED + spelers);
+		score2.setScore(2);
+
+		Score score1 = o.getScore("");
+		score1.setScore(1);
+
+		Score score0 = o.getScore(ChatColor.BOLD + "" + ChatColor.GREEN + "VPS.LucasRidder.NL");
+		score0.setScore(0);
+
+		player.setScoreboard(b);
+	}
+
+	//clear chat
+	public void clearChat(Player player) {
+		int x = 0;
+		while (x < 20){
+			player.sendMessage("");
+			x = x + 1;
+		}
+	}
+
+	//motd
+	public void motd(Player player) {
+		String name = player.getName();
+		clearChat(player);
+		player.sendMessage(ChatColor.DARK_GRAY + "Welkom, " + ChatColor.GOLD + name);
+		player.sendMessage(ChatColor.BLUE + "Beschikbare servers: ");
+		player.sendMessage(ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/minigames");
+		player.sendMessage("");
+		player.sendMessage("");
+	}
+
 	//Start-up
 	@Override
 	public void onEnable() {
@@ -98,13 +169,14 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	//Power-down
 	@Override
 	public void onDisable() {
-		this.saveConfig();
-		System.out.println("[HUB]" + ChatColor.GREEN + " succesfully disabled");
 		// shut down plugin
+		this.saveConfig();
+		//stop scoreboard
 		for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
-			Scoreboard scoreboard = null;
-			onlinePlayers.setScoreboard(scoreboard);
+			onlinePlayers.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 		}
+		//finish
+		System.out.println("[HUB]" + ChatColor.GREEN + " succesfully disabled");
 	}
 
 	//Join
@@ -122,67 +194,25 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		}
 
 		//spawn loc
-			try {
-				int x = this.getConfig().getInt("spawn.x");
-				int y = this.getConfig().getInt("spawn.y");
-				int z = this.getConfig().getInt("spawn.z");
-				Location loc = new Location(player.getWorld(), x, y, z);
-				player.teleport(loc);
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
+		try {
+			int x = this.getConfig().getInt("spawn.x");
+			int y = this.getConfig().getInt("spawn.y");
+			int z = this.getConfig().getInt("spawn.z");
+			Location loc = new Location(player.getWorld(), x, y, z);
+			player.teleport(loc);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 
 			//set inv
-			player.getInventory().clear();
-			ItemStack stack1 = new ItemStack(Material.GRASS_BLOCK);
-			ItemStack stack2 = new ItemStack(Material.DIAMOND_SWORD);
-			ItemStack stack3 = new ItemStack(Material.RED_WOOL);
-			ItemMeta meta1 = stack1.getItemMeta();
-			ItemMeta meta2 = stack2.getItemMeta();
-			ItemMeta meta3 = stack3.getItemMeta();
-			meta1.setDisplayName(ChatColor.GOLD + "Join survival!");
-			meta2.setDisplayName(ChatColor.GOLD + "Join minigames!");
-			meta3.setDisplayName(ChatColor.GOLD + "Join pixelmon!");
-			stack1.setItemMeta(meta1);
-			stack2.setItemMeta(meta2);
-			stack3.setItemMeta(meta3);
-			player.getInventory().setItem(3, stack1);
-			player.getInventory().setItem(4, stack2);
-			player.getInventory().setItem(5, stack3);
-			player.updateInventory();
+			setInventory(player);
 
 			//scoreboard
 			new BukkitRunnable() {
 				public void run() {
-					if (!player.isOnline()) {
-						this.cancel();
-					} else {
-						ScoreboardManager manager = Bukkit.getScoreboardManager();
-						Scoreboard b = manager.getNewScoreboard();
-						int spelers = getServer().getOnlinePlayers().size();
-
-						Objective o = b.registerNewObjective("Gold", "", ChatColor.BOLD + "" + ChatColor.BLUE + "Lobby");
-						o.setDisplaySlot(DisplaySlot.SIDEBAR);
-
-						Score score5 = o.getScore(ChatColor.YELLOW + "");
-						score5.setScore(5);
-
-						Score score4 = o.getScore(ChatColor.YELLOW + "Welkom, " + ChatColor.GRAY + player.getName());
-						score4.setScore(4);
-
-						Score score3 = o.getScore(ChatColor.BOLD + "");
-						score3.setScore(3);
-
-						Score score2 = o.getScore(ChatColor.GOLD + "Aantal spelers online: " + ChatColor.RED + spelers);
-						score2.setScore(2);
-
-						Score score1 = o.getScore("");
-						score1.setScore(1);
-
-						Score score0 = o.getScore(ChatColor.BOLD + "" + ChatColor.GREEN + "VPS.LucasRidder.NL");
-						score0.setScore(0);
-
-						player.setScoreboard(b);
+					if (!player.isOnline()) this.cancel();
+					else {
+						updateScoreboard(player);
 					}
 
 				}
@@ -190,69 +220,26 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 
 			//join message
 			if (player.isOp()) {
-				//stop melding
+				//Join message
 				e.setJoinMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "+" + ChatColor.DARK_GRAY + "] " + ChatColor.RED + name);
-				//zeg hoi
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage(ChatColor.WHITE + "   Welkom, " + ChatColor.GOLD + name);
-				player.sendMessage(ChatColor.WHITE + "   Jij bent een " + ChatColor.GOLD + "Admin");
-				player.sendMessage(ChatColor.BLUE + "   Beschikbare servers: ");
-				player.sendMessage(ChatColor.GOLD + "   /survival" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/minigames");
-				player.sendMessage("");
+
+				//motd
+				motd(player);
+
 				if (lock) {
 					player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Lockdown bypassed: " + lockreason);
 				}
 			} else if (!player.hasPlayedBefore()) {
+				//Join message
 				e.setJoinMessage(ChatColor.DARK_GRAY + "Welkom " + ChatColor.RESET + name);
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage(ChatColor.DARK_GRAY + "Welkom, " + ChatColor.GOLD + name);
-				player.sendMessage(ChatColor.BLUE + "Beschikbare servers: ");
-				player.sendMessage(ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/minigames");
-				player.sendMessage("");
-				player.sendMessage("");
+
+				motd(player);
 			} else {
+				//Join message
 				e.setJoinMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "+" + ChatColor.DARK_GRAY + "] " + ChatColor.RESET + name);
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage("");
-				player.sendMessage(ChatColor.DARK_GRAY + "Welkom, " + ChatColor.GOLD + name);
-				player.sendMessage(ChatColor.BLUE + "Beschikbare servers: ");
-				player.sendMessage(ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/minigames");
-				player.sendMessage("");
-				player.sendMessage("");
+
+				//motd
+				motd(player);
 			}
 		}
 
