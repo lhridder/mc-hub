@@ -26,6 +26,7 @@ import org.bukkit.scoreboard.*;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 
 
 public class Main extends JavaPlugin implements Listener, PluginMessageListener {
@@ -38,6 +39,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		int all = 0;
 		boolean lock;
 		String lockreason;
+		HashMap<Player, String> PlayerBoolean = new HashMap<Player, String>();
 
 	//send server
 	public void sendServer(String server, Player player) {
@@ -52,6 +54,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			e.printStackTrace();
 		}
 		player.sendPluginMessage(this, "BungeeCord", b.toByteArray());
+		PlayerBoolean.put(player, server);
 	}
 
 	//playercount
@@ -258,10 +261,22 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	public void onPlayerLeave(PlayerQuitEvent e) {
 		Player player = e.getPlayer();
 		String name = player.getName();
-		if(player.isOp()) {
-			e.setQuitMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "-" + ChatColor.DARK_GRAY + "] " + ChatColor.RED + name);
+		//bungee check
+		String server = PlayerBoolean.get(player);
+		if (server != null) {
+			if (player.hasPermission("survival.admin")) {
+				e.setQuitMessage(ChatColor.RED + name + ChatColor.DARK_RED + " -> " + ChatColor.GRAY + server);
+			} else {
+				e.setQuitMessage(ChatColor.WHITE + name + ChatColor.DARK_RED + " -> " + ChatColor.GRAY + server);
+			}
+			PlayerBoolean.remove(player);
 		} else {
-			e.setQuitMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "-" + ChatColor.DARK_GRAY + "] " + ChatColor.RESET + name);
+			//leave message
+			if (player.hasPermission("survival.admin")) {
+				e.setQuitMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "-" + ChatColor.DARK_GRAY + "] " + ChatColor.RED + name);
+			} else {
+				e.setQuitMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "-" + ChatColor.DARK_GRAY + "] " + ChatColor.RESET + name);
+			}
 		}
 	}
 
