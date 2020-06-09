@@ -21,3 +21,7 @@ commands:
  lock:
   aliases: lockdown
   usage: "/<command> (reden)"
+ motd:
+  usage: "/<command>"
+ stop:
+  usage: "/<command>"

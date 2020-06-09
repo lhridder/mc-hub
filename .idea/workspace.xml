@@ -16,13 +16,21 @@
         <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </expand>
-    <select />
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:origin/master" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="94c7179b-c432-4395-a352-91ffba49e6ad" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/mc-hub.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mc-hub.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yeet plugin 123/src/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/yeet plugin 123/src/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yeet plugin 123/src/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/yeet plugin 123/src/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +39,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="KEEP" />
   </component>
   <component name="ProjectId" id="1btato1gCrGW2whrMgRn9Y2MBfG" />
   <component name="ProjectViewState">
@@ -83,5 +92,16 @@
       <screen x="0" y="0" width="2560" height="1050" />
     </state>
     <state x="760" y="99" key="SettingsEditor/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1589482277406" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java</url>
+          <line>541</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
