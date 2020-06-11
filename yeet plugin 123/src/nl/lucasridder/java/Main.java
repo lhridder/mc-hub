@@ -1,7 +1,5 @@
 package nl.lucasridder.java;
 
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteStreams;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -24,23 +22,20 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.Socket;
 import java.util.HashMap;
 
 
 public class Main extends JavaPlugin implements Listener, PluginMessageListener {
 
 	//variabelen
-		int spelers = getServer().getOnlinePlayers().size();
-		int survival = 0;
-		int minigames = 0;
-		int lobby = 0;
-		int pixelmon = 0;
 		int all = 0;
 		boolean lock;
 		String lockreason;
-		HashMap<Player, String> PlayerBoolean = new HashMap<Player, String>();
+		HashMap<Player, String> PlayerBoolean = new HashMap<>();
 
 	//send server
 	public void sendServer(String server, Player player) {
@@ -59,17 +54,29 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	}
 
 	//playercount
-	public void playerCount(Player player) {
-		//BUNGEE
-		ByteArrayOutputStream b = new ByteArrayOutputStream();
-		DataOutputStream out = new DataOutputStream(b);
+	public void playerCount() {
 		try {
-			out.writeUTF("PlayerCount");
-			out.writeUTF("ALL");
+			Socket sock = new Socket("vps2.lucasridder.nl", 25565);
+			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
+			DataInputStream in = new DataInputStream(sock.getInputStream());
+			out.write(0xFE);
+
+			int b;
+			StringBuilder str = new StringBuilder();
+			while ((b = in.read()) != -1) {
+				if (b > 16 && b != 255 && b != 23 && b != 24) {
+					// Not sure what use the two characters are so I omit them
+					str.append((char) b);
+					System.out.println(b + ":" + ((char) b));
+				}
+			}
+			String[] data = str.toString().split("§");
+			this.all = Integer.parseInt(data[2]);
+
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		player.sendPluginMessage(this, "BungeeCord", b.toByteArray());
 	}
 
 	//inventory
@@ -83,7 +90,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		ItemMeta meta3 = stack3.getItemMeta();
 		meta1.setDisplayName(ChatColor.GOLD + "Join survival!");
 		meta2.setDisplayName(ChatColor.GOLD + "Join minigames!");
-		meta3.setDisplayName(ChatColor.GOLD + "Join pixelmon!");
+		meta3.setDisplayName(ChatColor.GOLD + "Join kitpvp!");
 		stack1.setItemMeta(meta1);
 		stack2.setItemMeta(meta2);
 		stack3.setItemMeta(meta3);
@@ -102,16 +109,20 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		Objective o = b.registerNewObjective("Gold", "", ChatColor.BOLD + "" + ChatColor.BLUE + top);
 		o.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-		Score score5 = o.getScore(ChatColor.YELLOW + "");
+		Score score6 = o.getScore(ChatColor.YELLOW + "");
+		score6.setScore(6);
+
+		Score score5 = o.getScore(ChatColor.YELLOW + "Welkom, " + ChatColor.GRAY + player.getName());
 		score5.setScore(5);
 
-		Score score4 = o.getScore(ChatColor.YELLOW + "Welkom, " + ChatColor.GRAY + player.getName());
+		Score score4 = o.getScore(ChatColor.BOLD + "");
 		score4.setScore(4);
 
-		Score score3 = o.getScore(ChatColor.BOLD + "");
+		Score score3 = o.getScore(ChatColor.GOLD + "Totaal aantal spelers: " + ChatColor.RED + this.all);
 		score3.setScore(3);
 
-		Score score2 = o.getScore(ChatColor.GOLD + "Aantal spelers online: " + ChatColor.RED + spelers);
+		int spelers = getServer().getOnlinePlayers().size();
+		Score score2 = o.getScore(ChatColor.BLUE + " - Hub: " + ChatColor.RED + spelers);
 		score2.setScore(2);
 
 		Score score1 = o.getScore("");
@@ -139,7 +150,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		clearChat(player);
 		player.sendMessage(ChatColor.DARK_GRAY + "Welkom, " + ChatColor.GOLD + name);
 		player.sendMessage(ChatColor.BLUE + "Beschikbare servers: ");
-		player.sendMessage(ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/minigames");
+		player.sendMessage(ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + ", " + ChatColor.GOLD + "/minigames" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/kitpvp");
 		player.sendMessage("");
 		player.sendMessage("");
 	}
@@ -163,7 +174,17 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		//config
 		this.getConfig().options().copyDefaults(true);
         this.saveDefaultConfig();
-		
+
+        //start counter
+		new BukkitRunnable() {
+			public void run() {
+				if(getServer().getOnlinePlayers().size() != 0) {
+					playerCount();
+				}
+
+			}
+		}.runTaskTimer(this, 20, 100);
+
 		//enable
 		System.out.println("[HUB]" + ChatColor.GREEN + " succesfully enabled");
 	}
@@ -399,37 +420,13 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		}
 		
 		//survival
-		if(cmd.getName().equalsIgnoreCase("survival")) {
-			if(!(sender instanceof Player)) {
-				//zeg het
-					sender.sendMessage(ChatColor.RED + "Je bent geen speler");
-					return true;
-				} else {
-			sendServer("survival", (Player) sender);
-				}
-		}
+		if(cmd.getName().equalsIgnoreCase("survival")) { sendServer("survival", (Player) sender); }
 		
 		//minigames
-		if(cmd.getName().equalsIgnoreCase("minigames")) {
-			if(!(sender instanceof Player)) {
-				//zeg het
-					sender.sendMessage(ChatColor.RED + "Je bent geen speler");
-					return true;
-				} else {
-				sendServer("minigames", (Player) sender);
-			}
-		}
+		if(cmd.getName().equalsIgnoreCase("minigames")) { sendServer("minigames", (Player) sender); }
 
-		//pixelmon
-		if(cmd.getName().equalsIgnoreCase("pixelmon")) {
-			if(!(sender instanceof Player)) {
-				//zeg het
-				sender.sendMessage(ChatColor.RED + "Je bent geen speler");
-				return true;
-			} else {
-				sendServer("sponge", (Player) sender);
-			}
-		}
+		//kitpvp
+		if(cmd.getName().equalsIgnoreCase("kitpvp")) { sendServer("kitpvp", (Player) sender); }
 
 		//lock
 		if(cmd.getName().equalsIgnoreCase("lock")) {
@@ -437,12 +434,24 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				lock = true;
 				if (args.length == 0) {
 					this.lockreason = "onbekend";
-					sender.sendMessage(ChatColor.GRAY + "Lockdown: " + ChatColor.GOLD + lock);
+					sender.sendMessage(ChatColor.GREEN + "Lockdown geactiveerd!");
 				} else {
 					this.lockreason = args[0];
-					sender.sendMessage(ChatColor.GRAY + "Lockdown: " + ChatColor.GOLD + lock);
+					sender.sendMessage(ChatColor.GREEN + "Lockdown geactiveerd!");
 					sender.sendMessage(ChatColor.GRAY + "Reden: " + ChatColor.GOLD + this.lockreason);
 				}
+				//kick all players
+				sender.sendMessage(ChatColor.GREEN + "Kicking all players...");
+				for(Player players : this.getServer().getOnlinePlayers()) {
+					if(!players.isOp()) {
+						players.kickPlayer(ChatColor.GRAY + "De server is momenteel in lockdown vanwege:" + "\n" +
+								ChatColor.BLUE + this.lockreason + "\n" +
+								ChatColor.YELLOW + "Zie actuele status via: " + ChatColor.AQUA + "https://www.discord.gg/AzVCaQE");
+					} else {
+						players.sendMessage(ChatColor.GREEN + "Lockdown geactiveerd | Kick Bypassed");
+					}
+				}
+				System.out.println("[HUB]" + ChatColor.DARK_RED + " Lockdown activated by " + ChatColor.GREEN + sender.getName() + ChatColor.RED + "!");
 			} else {
 				this.lock = false;
 				sender.sendMessage(ChatColor.GREEN + "Lockdown opgeheven");
@@ -522,7 +531,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		ItemMeta meta3 = stack3.getItemMeta();
 		meta1.setDisplayName(ChatColor.GOLD + "Join survival!");
 		meta2.setDisplayName(ChatColor.GOLD + "Join minigames!");
-		meta3.setDisplayName(ChatColor.GOLD + "Join pixelmon!");
+		meta3.setDisplayName(ChatColor.GOLD + "Join kitpvp!");
 		stack1.setItemMeta(meta1);
 		stack2.setItemMeta(meta2);
 		stack3.setItemMeta(meta3);
@@ -546,7 +555,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	}
 
 	//tab stop
-//soon
+		//soon
 
 	//Drop
 	@EventHandler
@@ -579,24 +588,8 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	//Listener bungee
 	@SuppressWarnings("NullableProblems")
 	@Override
-	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-		if (!channel.equals("BungeeCord")) return;
-		if (!player.isOnline()) {
-			@SuppressWarnings("UnstableApiUsage") ByteArrayDataInput in = ByteStreams.newDataInput(message);
-			String subchannel = in.readUTF();
-
-			if (subchannel.equals("PlayerCount")) {
-				@SuppressWarnings("unused")
-				String server = in.readUTF();
-				if (server.equalsIgnoreCase("lobby")) this.lobby = in.readInt();
-				if (server.equalsIgnoreCase("ALL")) this.all = in.readInt();
-				if (server.equalsIgnoreCase("survival")) this.survival = in.readInt();
-				if (server.equalsIgnoreCase("sponge")) this.pixelmon = in.readInt();
-				if (server.equalsIgnoreCase("minigames")) this.minigames = in.readInt();
-
-				System.out.println("lobby:" + lobby + " survival: " + survival + " pixelmon: " + pixelmon + " minigames: " + minigames + " ALL: " + all);
-			}
-		}
+	public void onPluginMessageReceived(String s, Player player, byte[] bytes) {
+		System.out.println("Plugin message received: " + s);
 	}
 
 }

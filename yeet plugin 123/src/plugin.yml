@@ -14,7 +14,7 @@ commands:
   usage: "/<command>"
  minigames:
   usage: "/<command>"
- pixelmon:
+ kitpvp:
   usage: "/<command>"
  setspawn:
   usage: "/<command>"
