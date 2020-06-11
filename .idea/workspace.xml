@@ -31,8 +31,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="94c7179b-c432-4395-a352-91ffba49e6ad" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yeet plugin 123/src/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/yeet plugin 123/src/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -89,7 +87,14 @@
       <option name="project" value="LOCAL" />
       <updated>1591903142795</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="fixed:&#10;- playercount&#10;- interact event&#10;- spawn">
+      <created>1591904580613</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1591904580613</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -120,7 +125,8 @@
     <MESSAGE value="stgs ready" />
     <MESSAGE value="zo goed als klaar" />
     <MESSAGE value="bungee error en motd fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="bungee error en motd fixed" />
+    <MESSAGE value="fixed:&#10;- playercount&#10;- interact event&#10;- spawn" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed:&#10;- playercount&#10;- interact event&#10;- spawn" />
   </component>
   <component name="WindowStateProjectService">
     <state x="760" y="99" key="#Project_Structure" timestamp="1589454081290">
@@ -139,10 +145,10 @@
       <screen x="0" y="0" width="2560" height="1050" />
     </state>
     <state x="760" y="99" key="SettingsEditor/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1589482277406" />
-    <state x="872" y="258" key="Vcs.Push.Dialog.v2" timestamp="1591903144990">
+    <state x="872" y="258" key="Vcs.Push.Dialog.v2" timestamp="1591904584868">
       <screen x="0" y="0" width="2560" height="1050" />
     </state>
-    <state x="872" y="258" key="Vcs.Push.Dialog.v2/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1591903144990" />
+    <state x="872" y="258" key="Vcs.Push.Dialog.v2/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1591904584868" />
     <state x="872" y="258" key="Vcs.Push.Dialog.v2/2560.-464.1080.1890/0.0.2560.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1591702249940" />
   </component>
 </project>

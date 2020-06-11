@@ -77,11 +77,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			}
 
 			String[] data = str.toString().split("§");
-			String motd = data[0];
-			int onlinePlayers = Integer.parseInt(data[1]);
-			int maxPlayers = Integer.parseInt(data[2]);
-			this.all = maxPlayers;
-			System.out.println("The server's MOTD is '" + motd + "'. The player count is " + onlinePlayers + "/" + maxPlayers);
+			this.all = Integer.parseInt(data[1]);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
