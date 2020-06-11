@@ -2,6 +2,8 @@ spawn:
  x: ''
  y: ''
  z: ''
+ yaw: ''
+ pitch: ''
 scoreboard:
  top: ''
  name: ''

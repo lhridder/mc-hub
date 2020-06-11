@@ -27,6 +27,7 @@ import org.bukkit.scoreboard.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.HashMap;
 
@@ -58,25 +59,30 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	//playercount
 	public void playerCount() {
 		try {
-			Socket sock = new Socket("vps2.lucasridder.nl", 25565);
-			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-			DataInputStream in = new DataInputStream(sock.getInputStream());
+			Socket socket = new Socket();
+			socket.connect(new InetSocketAddress("vps2.lucasridder.nl", 25565), 1000);
+
+			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+			DataInputStream in = new DataInputStream(socket.getInputStream());
+
 			out.write(0xFE);
 
-			int b;
 			StringBuilder str = new StringBuilder();
+
+			int b;
 			while ((b = in.read()) != -1) {
-				if (b > 16 && b != 255 && b != 23 && b != 24) {
-					// Not sure what use the two characters are so I omit them
+				if (b != 0 && b > 16 && b != 255 && b != 23 && b != 24) {
 					str.append((char) b);
-					System.out.println(b + ":" + ((char) b));
 				}
 			}
-			String[] data = str.toString().split("§");
-			this.all = Integer.parseInt(data[2]);
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			String[] data = str.toString().split("§");
+			String motd = data[0];
+			int onlinePlayers = Integer.parseInt(data[1]);
+			int maxPlayers = Integer.parseInt(data[2]);
+			this.all = maxPlayers;
+			System.out.println("The server's MOTD is '" + motd + "'. The player count is " + onlinePlayers + "/" + maxPlayers);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -150,9 +156,9 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	public void motd(Player player) {
 		String name = player.getName();
 		clearChat(player);
-		player.sendMessage("    " + ChatColor.DARK_GRAY + "Welkom, " + ChatColor.GOLD + name);
-		player.sendMessage("    " + ChatColor.BLUE + "Beschikbare servers: ");
-		player.sendMessage("    " + ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + ", " + ChatColor.GOLD + "/minigames" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/kitpvp");
+		player.sendMessage("  " + ChatColor.DARK_GRAY + "Welkom, " + ChatColor.GOLD + name);
+		player.sendMessage("  " + ChatColor.BLUE + "Beschikbare servers: ");
+		player.sendMessage("  " + ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + ", " + ChatColor.GOLD + "/minigames" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/kitpvp");
 		player.sendMessage("");
 		player.sendMessage("");
 	}
@@ -223,7 +229,9 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			int x = this.getConfig().getInt("spawn.x");
 			int y = this.getConfig().getInt("spawn.y");
 			int z = this.getConfig().getInt("spawn.z");
-			Location loc = new Location(player.getWorld(), x, y, z);
+			float yaw = this.getConfig().getInt("spawn.yaw");
+			float pitch = this.getConfig().getInt("spawn.pitch");
+			Location loc = new Location(player.getWorld(), x, y, z, pitch, yaw);
 			player.teleport(loc);
 		} catch (Exception e1) {
 			e1.printStackTrace();
@@ -544,7 +552,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				} else if(player.getInventory().getItemInMainHand().equals(stack2)) {
 				sendServer("minigames", player);
 				} else if(player.getInventory().getItemInMainHand().equals(stack3)) {
-				sendServer("sponge", player);
+				sendServer("kitpvp", player);
 			} else {
 				if (!player.isOp()) { e.setCancelled(true); }
 			}
