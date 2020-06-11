@@ -1,5 +1,7 @@
 package nl.lucasridder.java;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -148,9 +150,9 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	public void motd(Player player) {
 		String name = player.getName();
 		clearChat(player);
-		player.sendMessage(ChatColor.DARK_GRAY + "Welkom, " + ChatColor.GOLD + name);
-		player.sendMessage(ChatColor.BLUE + "Beschikbare servers: ");
-		player.sendMessage(ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + ", " + ChatColor.GOLD + "/minigames" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/kitpvp");
+		player.sendMessage("    " + ChatColor.DARK_GRAY + "Welkom, " + ChatColor.GOLD + name);
+		player.sendMessage("    " + ChatColor.BLUE + "Beschikbare servers: ");
+		player.sendMessage("    " + ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + ", " + ChatColor.GOLD + "/minigames" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/kitpvp");
 		player.sendMessage("");
 		player.sendMessage("");
 	}
@@ -586,10 +588,13 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	public void onWeatherChange(WeatherChangeEvent e){ e.setCancelled(e.toWeatherState()); }
 
 	//Listener bungee
-	@SuppressWarnings("NullableProblems")
+	@SuppressWarnings({"NullableProblems", "UnstableApiUsage"})
 	@Override
-	public void onPluginMessageReceived(String s, Player player, byte[] bytes) {
-		System.out.println("Plugin message received: " + s);
+	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+		if (!channel.equals("BungeeCord")) {
+			return;
+		}
+		ByteArrayDataInput in = ByteStreams.newDataInput(message);
+		String subchannel = in.readUTF();
 	}
-
 }
