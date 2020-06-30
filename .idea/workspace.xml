@@ -31,6 +31,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="94c7179b-c432-4395-a352-91ffba49e6ad" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -50,8 +51,8 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/yeet plugin 123" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Documents/patched_1.16.1.jar!/" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.19335938" />
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
@@ -94,7 +95,14 @@
       <option name="project" value="LOCAL" />
       <updated>1591904580613</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="console spam">
+      <created>1591904800063</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1591904800063</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -126,7 +134,8 @@
     <MESSAGE value="zo goed als klaar" />
     <MESSAGE value="bungee error en motd fixed" />
     <MESSAGE value="fixed:&#10;- playercount&#10;- interact event&#10;- spawn" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed:&#10;- playercount&#10;- interact event&#10;- spawn" />
+    <MESSAGE value="console spam" />
+    <option name="LAST_COMMIT_MESSAGE" value="console spam" />
   </component>
   <component name="WindowStateProjectService">
     <state x="760" y="99" key="#Project_Structure" timestamp="1589454081290">
@@ -137,18 +146,18 @@
       <screen x="0" y="0" width="2560" height="1050" />
     </state>
     <state x="1085" y="231" key="#com.intellij.ide.util.MemberChooser/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1591902113793" />
-    <state x="986" y="266" key="FileChooserDialogImpl" timestamp="1589482272291">
+    <state x="986" y="266" key="FileChooserDialogImpl" timestamp="1593527302026">
       <screen x="0" y="0" width="2560" height="1050" />
     </state>
-    <state x="986" y="266" key="FileChooserDialogImpl/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1589482272291" />
-    <state x="760" y="99" key="SettingsEditor" timestamp="1589482277406">
+    <state x="986" y="266" key="FileChooserDialogImpl/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1593527302026" />
+    <state x="760" y="99" key="SettingsEditor" timestamp="1593527306435">
       <screen x="0" y="0" width="2560" height="1050" />
     </state>
-    <state x="760" y="99" key="SettingsEditor/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1589482277406" />
-    <state x="872" y="258" key="Vcs.Push.Dialog.v2" timestamp="1591904584868">
+    <state x="760" y="99" key="SettingsEditor/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1593527306435" />
+    <state x="872" y="258" key="Vcs.Push.Dialog.v2" timestamp="1591904803514">
       <screen x="0" y="0" width="2560" height="1050" />
     </state>
-    <state x="872" y="258" key="Vcs.Push.Dialog.v2/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1591904584868" />
+    <state x="872" y="258" key="Vcs.Push.Dialog.v2/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1591904803514" />
     <state x="872" y="258" key="Vcs.Push.Dialog.v2/2560.-464.1080.1890/0.0.2560.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1591702249940" />
   </component>
 </project>

@@ -2,10 +2,13 @@ package nl.lucasridder.java;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
+import net.minecraft.server.v1_16_R1.IChatBaseComponent;
+import net.minecraft.server.v1_16_R1.PacketPlayOutTitle;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.output.ByteArrayOutputStream;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -150,6 +153,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 
 	//motd
 	public void motd(Player player) {
+		//chat
 		String name = player.getName();
 		clearChat(player);
 		player.sendMessage("  " + ChatColor.DARK_GRAY + "Welkom, " + ChatColor.GOLD + name);
@@ -157,6 +161,12 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		player.sendMessage("  " + ChatColor.GOLD + "/survival" + ChatColor.DARK_GRAY + ", " + ChatColor.GOLD + "/minigames" + ChatColor.DARK_GRAY + " en " + ChatColor.GOLD + "/kitpvp");
 		player.sendMessage("");
 		player.sendMessage("");
+
+		//title
+		PacketPlayOutTitle title = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, IChatBaseComponent.ChatSerializer.a("{\"text\":\"§aWelkom!\"}"), 20, 40, 20);
+		PacketPlayOutTitle subtitle = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, IChatBaseComponent.ChatSerializer.a("{\"text\":\"§bIn de hub\"}"), 20, 40, 20);
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket(title);
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket(subtitle);
 	}
 
 	//Start-up
@@ -227,7 +237,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			int z = this.getConfig().getInt("spawn.z");
 			float yaw = this.getConfig().getInt("spawn.yaw");
 			float pitch = this.getConfig().getInt("spawn.pitch");
-			Location loc = new Location(player.getWorld(), x, y, z, pitch, yaw);
+			Location loc = new Location(Bukkit.getWorld("minigames"), x, y, z, pitch, yaw);
 			player.teleport(loc);
 		} catch (Exception e1) {
 			e1.printStackTrace();
