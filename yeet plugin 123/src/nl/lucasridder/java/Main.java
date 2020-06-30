@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Objects;
 
 
 public class Main extends JavaPlugin implements Listener, PluginMessageListener {
@@ -63,7 +64,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	public void playerCount() {
 		try {
 			Socket socket = new Socket();
-			socket.connect(new InetSocketAddress("vps2.lucasridder.nl", 25565), 1000);
+			socket.connect(new InetSocketAddress(Objects.requireNonNull(this.getConfig().getString("hostname")), 25565), 1000);
 
 			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 			DataInputStream in = new DataInputStream(socket.getInputStream());
