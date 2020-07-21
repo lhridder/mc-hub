@@ -31,9 +31,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="94c7179b-c432-4395-a352-91ffba49e6ad" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,7 +116,14 @@
       <option name="project" value="LOCAL" />
       <updated>1593528025727</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="gigantische huts staffmode">
+      <created>1595339208424</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1595339208424</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -153,7 +158,8 @@
     <MESSAGE value="console spam" />
     <MESSAGE value="1.16.1 paper update" />
     <MESSAGE value="socket fix + config" />
-    <option name="LAST_COMMIT_MESSAGE" value="socket fix + config" />
+    <MESSAGE value="gigantische huts staffmode" />
+    <option name="LAST_COMMIT_MESSAGE" value="gigantische huts staffmode" />
   </component>
   <component name="WindowStateProjectService">
     <state x="760" y="99" key="#Project_Structure" timestamp="1589454081290">
@@ -174,9 +180,10 @@
     </state>
     <state x="570" y="99" key="SettingsEditor/0.0.1920.1050@0.0.1920.1050" timestamp="1595338750071" />
     <state x="760" y="99" key="SettingsEditor/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1593527340342" />
-    <state x="872" y="258" key="Vcs.Push.Dialog.v2" timestamp="1593527378425">
-      <screen x="0" y="0" width="2560" height="1050" />
+    <state x="654" y="258" key="Vcs.Push.Dialog.v2" timestamp="1595339213731">
+      <screen x="0" y="0" width="1920" height="1050" />
     </state>
+    <state x="654" y="258" key="Vcs.Push.Dialog.v2/0.0.1920.1050@0.0.1920.1050" timestamp="1595339213731" />
     <state x="872" y="258" key="Vcs.Push.Dialog.v2/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1593527378425" />
     <state x="872" y="258" key="Vcs.Push.Dialog.v2/2560.-464.1080.1890/0.0.2560.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1591702249940" />
   </component>
@@ -187,6 +194,16 @@
           <url>file://$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java</url>
           <line>241</line>
           <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java</url>
+          <line>355</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java</url>
+          <line>403</line>
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
