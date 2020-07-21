@@ -32,8 +32,8 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7179b-c432-4395-a352-91ffba49e6ad" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yeet plugin 123/src/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/yeet plugin 123/src/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yeet plugin 123/src/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/yeet plugin 123/src/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,7 +110,14 @@
       <option name="project" value="LOCAL" />
       <updated>1593527373841</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="socket fix + config">
+      <created>1593528025727</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1593528025727</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -144,7 +151,8 @@
     <MESSAGE value="fixed:&#10;- playercount&#10;- interact event&#10;- spawn" />
     <MESSAGE value="console spam" />
     <MESSAGE value="1.16.1 paper update" />
-    <option name="LAST_COMMIT_MESSAGE" value="1.16.1 paper update" />
+    <MESSAGE value="socket fix + config" />
+    <option name="LAST_COMMIT_MESSAGE" value="socket fix + config" />
   </component>
   <component name="WindowStateProjectService">
     <state x="760" y="99" key="#Project_Structure" timestamp="1589454081290">

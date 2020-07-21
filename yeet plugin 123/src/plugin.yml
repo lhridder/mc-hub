@@ -25,3 +25,8 @@ commands:
   usage: "/<command>"
  stop:
   usage: "/<command>"
+ staff:
+   usage: "/<command>"
+ vanish:
+  aliases: v
+  usage: "/<command>"
