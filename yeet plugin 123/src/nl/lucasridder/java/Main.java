@@ -272,7 +272,10 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			staffOn(player);
 		} else {
 			for (Player players : Bukkit.getOnlinePlayers()) {
-				players.hidePlayer(this, player);
+				//check the players if they are staff
+				if(!Invis.containsKey(players)) {
+					players.hidePlayer(this, player);
+				}
 			}
 			Invis.put(player, true);
 			player.sendMessage(ChatColor.GOLD + "Your invisability was: " + ChatColor.GREEN + "enabled.");
@@ -430,7 +433,10 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		//get invis staff
 		for(Player players : this.getServer().getOnlinePlayers()) {
 			if(Invis.containsKey(players)) {
-				player.hidePlayer(this, players);
+				//check the players if they are staff
+				if(!Invis.containsKey(players)) {
+					players.hidePlayer(this, player);
+				}
 			}
 		}
 		}
