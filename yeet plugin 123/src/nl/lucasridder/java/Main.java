@@ -27,7 +27,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.*;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -36,8 +39,6 @@ import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.Objects;
-
 
 public class Main extends JavaPlugin implements Listener, PluginMessageListener {
 
@@ -154,6 +155,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 
 	//update scoreboard
 	public void updateScoreboard(Player player) {
+
 		ScoreboardManager manager = Bukkit.getScoreboardManager();
 		Scoreboard b = manager.getNewScoreboard();
 
@@ -168,7 +170,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		o.getScore(ChatColor.YELLOW + "Welkom, " + ChatColor.GRAY + player.getName()).setScore(8);
 
 		//spacer 7
-		o.getScore(ChatColor.BOLD + "").setScore(7);
+		o.getScore(ChatColor.RED + "").setScore(7);
 
 		//staff 4 t/m 6
 			//check if player has staff permission
@@ -176,22 +178,22 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				//if staff mode enabled
 				if(Staff.containsKey(player)) {
 					//staff on 6
-					o.getScore(ChatColor.DARK_GREEN + "Staffmode: " + ChatColor.GREEN + "Enabled").setScore(6);
+					o.getScore(ChatColor.DARK_GREEN + "Staffmode: " + ChatColor.GREEN + "✔").setScore(6);
 					//check invis
 					if(Invis.containsKey(player)) {
 						//invis on 5
-						o.getScore(ChatColor.BLUE + " - Invisability: " + ChatColor.GREEN + "Enabled").setScore(5);
+						o.getScore(ChatColor.BLUE + " - Invisability: " + ChatColor.GREEN + "✔").setScore(5);
 					} else {
 						//invis off 5
-						o.getScore(ChatColor.BLUE + " - Invisability: " + ChatColor.RED + "Disabled").setScore(5);
+						o.getScore(ChatColor.BLUE + " - Invisability: " + ChatColor.RED + "✘").setScore(5);
 					}
 				} else {
 					//staff off 6
-					o.getScore(ChatColor.DARK_GREEN + "Staffmode: " + ChatColor.RED + "Disabled").setScore(6);
+					o.getScore(ChatColor.DARK_GREEN + "Staffmode: " + ChatColor.RED + "✘").setScore(6);
 				}
 
 				//spacer 4
-				o.getScore(ChatColor.BOLD + "").setScore(4);
+				o.getScore(ChatColor.DARK_PURPLE + "").setScore(4);
 			}
 
 		//totaal spelers proxy 3
@@ -199,7 +201,9 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 
 		//totaal spelers hub 2
 		int spelers = getServer().getOnlinePlayers().size();
-		o.getScore(ChatColor.BLUE + " - Hub: " + ChatColor.RED + spelers).setScore(2);
+		int invis = Invis.size();
+		int hub = spelers - invis;
+		o.getScore(ChatColor.BLUE + " - Hub: " + ChatColor.RED + hub).setScore(2);
 
 		//spacer 1
 		o.getScore("").setScore(1);
@@ -209,6 +213,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		o.getScore(ChatColor.BOLD + "" + ChatColor.GREEN + name).setScore(0);
 
 		player.setScoreboard(b);
+
 	}
 
 	//clear chat
@@ -240,6 +245,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	}
 
 	//setTablist
+	/*
 	public void setTablist(Player player) {
 		CraftPlayer cplayer = (CraftPlayer) player;
 		PlayerConnection connection = cplayer.getHandle().playerConnection;
@@ -256,6 +262,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		}
 		connection.sendPacket(packet);
 	}
+	*/
 
 	//invisOn method
 	public void invisOn(Player player) {
@@ -399,7 +406,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		}.runTaskTimer(this, 20, 20);
 
 		//set tablist
-		setTablist(player);
+		// setTablist(player);
 
 		//check config for player invis info
 		if(!Invis.containsKey(player)) {
@@ -407,26 +414,25 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			if (player.isOp()) {
 				//Join message
 				e.setJoinMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "+" + ChatColor.DARK_GRAY + "] " + ChatColor.RED + name);
-
-				//motd
-				motd(player);
-
-				if (lock) {
-					player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Lockdown bypassed: " + lockreason);
-				}
 			} else if (!player.hasPlayedBefore()) {
 				//Join message
 				e.setJoinMessage(ChatColor.DARK_GRAY + "Welkom " + ChatColor.RESET + name);
-
-				motd(player);
 			} else {
 				//Join message
 				e.setJoinMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "+" + ChatColor.DARK_GRAY + "] " + ChatColor.RESET + name);
-
-				//motd
-				motd(player);
 			}
-		} else { motd(player); }
+			motd(player);
+		} else {
+			motd(player);
+			e.setJoinMessage(null);
+		}
+
+		//get invis staff
+		for(Player players : this.getServer().getOnlinePlayers()) {
+			if(Invis.containsKey(players)) {
+				player.hidePlayer(this, players);
+			}
+		}
 		}
 
 	//Leave
@@ -767,6 +773,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 					setStaffInventory(player);
 				} else if(player.getInventory().getItemInMainHand().equals(stack6)) {
 					staffOff(player);
+					setPlayerInventory(player);
 			} else {
 				e.setCancelled(!Staff.containsKey((Player) e.getPlayer()));
 			}

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="minigames" />
+      <artifact name="hub" />
     </artifacts-to-build>
   </component>
   <component name="BranchesTreeState">
@@ -24,21 +24,35 @@
     <select>
       <path>
         <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="BRANCH:master" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:origin/master" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </select>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="94c7179b-c432-4395-a352-91ffba49e6ad" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="KEEP" />
   </component>
@@ -54,7 +68,6 @@
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.19335938" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -116,14 +129,7 @@
       <option name="project" value="LOCAL" />
       <updated>1593528025727</updated>
     </task>
-    <task id="LOCAL-00008" summary="gigantische huts staffmode">
-      <created>1595339208424</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1595339208424</updated>
-    </task>
-    <option name="localTasksCounter" value="9" />
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -158,8 +164,7 @@
     <MESSAGE value="console spam" />
     <MESSAGE value="1.16.1 paper update" />
     <MESSAGE value="socket fix + config" />
-    <MESSAGE value="gigantische huts staffmode" />
-    <option name="LAST_COMMIT_MESSAGE" value="gigantische huts staffmode" />
+    <option name="LAST_COMMIT_MESSAGE" value="socket fix + config" />
   </component>
   <component name="WindowStateProjectService">
     <state x="760" y="99" key="#Project_Structure" timestamp="1589454081290">
@@ -170,42 +175,22 @@
       <screen x="0" y="0" width="2560" height="1050" />
     </state>
     <state x="1085" y="231" key="#com.intellij.ide.util.MemberChooser/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1591902113793" />
-    <state x="740" y="266" key="FileChooserDialogImpl" timestamp="1595338212112">
-      <screen x="0" y="0" width="1920" height="1050" />
+    <state x="492" y="275" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1595370828636">
+      <screen x="0" y="0" width="2560" height="1050" />
     </state>
-    <state x="740" y="266" key="FileChooserDialogImpl/0.0.1920.1050@0.0.1920.1050" timestamp="1595338212112" />
+    <state x="492" y="275" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1595370828636" />
+    <state x="986" y="266" key="FileChooserDialogImpl" timestamp="1593527302026">
+      <screen x="0" y="0" width="2560" height="1050" />
+    </state>
     <state x="986" y="266" key="FileChooserDialogImpl/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1593527302026" />
-    <state x="570" y="99" key="SettingsEditor" timestamp="1595338750071">
-      <screen x="0" y="0" width="1920" height="1050" />
+    <state x="760" y="99" key="SettingsEditor" timestamp="1595364573396">
+      <screen x="0" y="0" width="2560" height="1050" />
     </state>
-    <state x="570" y="99" key="SettingsEditor/0.0.1920.1050@0.0.1920.1050" timestamp="1595338750071" />
-    <state x="760" y="99" key="SettingsEditor/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1593527340342" />
-    <state x="654" y="258" key="Vcs.Push.Dialog.v2" timestamp="1595339213731">
-      <screen x="0" y="0" width="1920" height="1050" />
+    <state x="760" y="99" key="SettingsEditor/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1595364573396" />
+    <state x="872" y="258" key="Vcs.Push.Dialog.v2" timestamp="1593527378425">
+      <screen x="0" y="0" width="2560" height="1050" />
     </state>
-    <state x="654" y="258" key="Vcs.Push.Dialog.v2/0.0.1920.1050@0.0.1920.1050" timestamp="1595339213731" />
     <state x="872" y="258" key="Vcs.Push.Dialog.v2/0.0.2560.1050/2560.0.1920.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1593527378425" />
     <state x="872" y="258" key="Vcs.Push.Dialog.v2/2560.-464.1080.1890/0.0.2560.1050/-1920.0.1920.1050@0.0.2560.1050" timestamp="1591702249940" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java</url>
-          <line>241</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java</url>
-          <line>355</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/yeet plugin 123/src/nl/lucasridder/java/Main.java</url>
-          <line>403</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
