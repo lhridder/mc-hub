@@ -100,7 +100,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		}
 	}
 
-	//inventory
+	//inventory player
 	public void setPlayerInventory(Player player) {
 		player.getInventory().clear();
 		ItemStack stack1 = new ItemStack(Material.GRASS_BLOCK);
@@ -120,7 +120,8 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		player.getInventory().setItem(5, stack3);
 		player.updateInventory();
 	}
-	//inventory
+
+	//inventory staff
 	public void setStaffInventory(Player player) {
 		if(Staff.containsKey(player)) {
 			if (Invis.containsKey(player)) {
@@ -175,7 +176,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				//if staff mode enabled
 				if(Staff.containsKey(player)) {
 					//staff on 6
-					o.getScore(ChatColor.DARK_GREEN + "Staffmode: " + ChatColor.GREEN + "Enabled").setScore(4);
+					o.getScore(ChatColor.DARK_GREEN + "Staffmode: " + ChatColor.GREEN + "Enabled").setScore(6);
 					//check invis
 					if(Invis.containsKey(player)) {
 						//invis on 5
@@ -186,7 +187,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 					}
 				} else {
 					//staff off 6
-					o.getScore(ChatColor.DARK_GREEN + "Staffmode: " + ChatColor.RED + "Disabled").setScore(4);
+					o.getScore(ChatColor.DARK_GREEN + "Staffmode: " + ChatColor.RED + "Disabled").setScore(6);
 				}
 
 				//spacer 4
@@ -211,6 +212,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	}
 
 	//clear chat
+	@Deprecated
 	public void clearChat(Player player) {
 		int x = 0;
 		while (x < 20){
@@ -287,6 +289,9 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		player.sendMessage(ChatColor.GOLD + "Staff mode has been: " + ChatColor.GREEN + "enabled!");
 		Staff.put(player, true);
 		setStaffInventory(player);
+		if(getConfig().getBoolean("player." + player + ".invis")) {
+			invisOn(player);
+		}
 	}
 
 	//staff off method
@@ -452,10 +457,12 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			e.setQuitMessage(null);
 			getConfig().set("player." + player + ".invis", true);
 			saveConfig();
+			Invis.remove(player);
 		}
 		if(Staff.containsKey(player)) {
 			getConfig().set("player." + player + ".staff", true);
 			saveConfig();
+			Staff.remove(player);
 		}
 	}
 
@@ -689,9 +696,10 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				player.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.AQUA + "/pixelmon" + ChatColor.DARK_GRAY + " : " + ChatColor.GOLD + "Ga naar de pixelmon server!" );
 				e.setCancelled(true);
 			} else if(message.equalsIgnoreCase("/survival")) { e.setCancelled(false);
+			} else if(message.equalsIgnoreCase("/kitpvp")) { e.setCancelled(false);
 			} else e.setCancelled(!message.equalsIgnoreCase("/minigames"));
 		}
-	}
+		}
 
 	//Chat
 	@EventHandler
@@ -785,8 +793,6 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	public void onClick(InventoryClickEvent e) {
 		//cancel if player is not in staff mode
 		e.setCancelled(!Staff.containsKey((Player) e.getWhoClicked()));
-
-		//TODO staff inventory
 	}
 	
 	//No Damage
