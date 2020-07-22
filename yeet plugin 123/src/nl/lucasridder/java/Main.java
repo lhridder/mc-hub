@@ -39,6 +39,7 @@ import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class Main extends JavaPlugin implements Listener, PluginMessageListener {
 
@@ -291,6 +292,9 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		Invis.remove(player);
 		player.sendMessage(ChatColor.GOLD + "Your invisability was: " + ChatColor.RED + "disabled.");
 		setStaffInventory(player);
+		UUID uuid = player.getUniqueId();
+		getConfig().set("player. " + uuid + ".invis", false);
+		saveConfig();
 	}
 
 	//staff on method
@@ -299,7 +303,8 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		player.sendMessage(ChatColor.GOLD + "Staff mode has been: " + ChatColor.GREEN + "enabled!");
 		Staff.put(player, true);
 		setStaffInventory(player);
-		if(getConfig().getBoolean("player." + player + ".invis")) {
+		UUID uuid = player.getUniqueId();
+		if(getConfig().getBoolean("player. " + uuid + ".invis")) {
 			invisOn(player);
 		}
 	}
@@ -313,6 +318,9 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		player.sendMessage(ChatColor.GOLD + "Staff mode has been: " + ChatColor.RED + "disabled!");
 		Staff.remove(player);
 		setStaffInventory(player);
+		UUID uuid = player.getUniqueId();
+		getConfig().set("player. " + uuid + ".staff", false);
+		saveConfig();
 	}
 
 	//Start-up
@@ -390,7 +398,8 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		}
 
 		//check which inv is needed
-		if(getConfig().getBoolean("player." + player + ".staff")) {
+		UUID uuid = player.getUniqueId();
+		if(getConfig().getBoolean("player." + uuid + ".staff")) {
 			staffOn(player);
 		} else {
 			//set inv
@@ -439,6 +448,11 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				}
 			}
 		}
+
+		//register player in config
+		// UUID uuid = player.getUniqueId();
+		getConfig().set("player. " + uuid + ".name", player.getName());
+		saveConfig();
 		}
 
 	//Leave
@@ -467,12 +481,14 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		} else {
 			//cancel quit message
 			e.setQuitMessage(null);
-			getConfig().set("player." + player + ".invis", true);
+			UUID uuid = player.getUniqueId();
+			getConfig().set("player. " + uuid + ".invis", true);
 			saveConfig();
 			Invis.remove(player);
 		}
 		if(Staff.containsKey(player)) {
-			getConfig().set("player." + player + ".staff", true);
+			UUID uuid = player.getUniqueId();
+			getConfig().set("player. " + uuid + ".staff", true);
 			saveConfig();
 			Staff.remove(player);
 		}
@@ -660,17 +676,18 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		//stop
 		if(cmd.getName().equalsIgnoreCase("stop")) {
 			sender.sendMessage(ChatColor.GREEN + "Kicking all players...");
-			for(Player players : this.getServer().getOnlinePlayers()) {
-				if(!players.equals(sender)) {
-					players.kickPlayer(ChatColor.GRAY + "De server wordt momenteel herstart" + "\n" +
-							ChatColor.BLUE + "wacht even met opnieuw joinen" + "\n" +
-							ChatColor.YELLOW + "Zie actuele status via: " + ChatColor.AQUA + "https://www.discord.gg/AzVCaQE");
+			if(this.getServer().getOnlinePlayers().size() != 0) {
+				for (Player players : this.getServer().getOnlinePlayers()) {
+					if (!players.equals(sender)) {
+						players.kickPlayer(ChatColor.GRAY + "De server wordt momenteel herstart" + "\n" +
+								ChatColor.BLUE + "wacht even met opnieuw joinen" + "\n" +
+								ChatColor.YELLOW + "Zie actuele status via: " + ChatColor.AQUA + "https://www.discord.gg/AzVCaQE");
+					}
 				}
-				sender.sendMessage(ChatColor.GREEN + "Stopping server...");
-				System.out.println("[HUB]" + ChatColor.DARK_RED + " stopping server...");
-				Bukkit.shutdown();
 			}
-
+			sender.sendMessage(ChatColor.GREEN + "Stopping server...");
+			System.out.println("[HUB]" + ChatColor.DARK_RED + " stopping server...");
+			Bukkit.shutdown();
 		}
 
 		//vanish
@@ -815,25 +832,31 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		e.setCancelled(true);
 	}
 
-	//Armorstand
+	//Armorstand cancel
 	@EventHandler
 	public void armorStand(PlayerArmorStandManipulateEvent e) {
 		//cancel if player is not in staff mode
 		e.setCancelled(!Staff.containsKey(e.getPlayer()));
 	}
 
-	//Block break
+	//Block break cancel
 	@EventHandler
 	public void onBreak(BlockBreakEvent e) {
 		//cancel if player is not in staff mode
 		e.setCancelled(!Staff.containsKey(e.getPlayer()));
+		if(e.getPlayer().isOp()) {
+			e.getPlayer().sendMessage(ChatColor.RED + "Enable staffmode first: " + ChatColor.AQUA + "/staff");
+		}
 	}
 	
-	//Block place
+	//Block place cancel
 	@EventHandler
 	public void onPlace(BlockPlaceEvent e) {
 		//cancel if player is not in staff mode
 		e.setCancelled(!Staff.containsKey(e.getPlayer()));
+		if(e.getPlayer().isOp()) {
+			e.getPlayer().sendMessage(ChatColor.RED + "Enable staffmode first: " + ChatColor.AQUA + "/staff");
+		}
 	}
 	
 	//Weer
