@@ -90,7 +90,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 
 			int b;
 			while ((b = in.read()) != -1) {
-				if (b != 0 && b > 16 && b != 255 && b != 23 && b != 24) {
+				if (b > 16 && b != 255 && b != 23 && b != 24) {
 					str.append((char) b);
 				}
 			}
@@ -161,7 +161,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		Scoreboard b = manager.getNewScoreboard();
 
 		String top = this.getConfig().getString("scoreboard.top");
-		Objective o = b.registerNewObjective("Gold", "", ChatColor.BOLD + "" + ChatColor.BLUE + top);
+		Objective o = b.registerNewObjective("Gold", "", ChatColor.BLUE + "" + ChatColor.BOLD + top);
 		o.setDisplaySlot(DisplaySlot.SIDEBAR);
 
 		//spacer 9
@@ -218,7 +218,6 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	}
 
 	//clear chat
-	@Deprecated
 	public void clearChat(Player player) {
 		int x = 0;
 		while (x < 20){
@@ -321,6 +320,11 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		UUID uuid = player.getUniqueId();
 		getConfig().set("player. " + uuid + ".staff", false);
 		saveConfig();
+	}
+
+	//staff error
+	public void staffError(Player player) {
+		player.sendMessage(ChatColor.RED + "Enable staffmode first: " + ChatColor.AQUA + "/staff");
 	}
 
 	//Start-up
@@ -722,7 +726,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				player.sendMessage(ChatColor.DARK_GRAY + "Zie hier de beschikbare commando's: ");
 				player.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.AQUA + "/survival" + ChatColor.DARK_GRAY + " : " + ChatColor.GOLD + "Ga naar de survival server!" );
 				player.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.AQUA + "/minigames" + ChatColor.DARK_GRAY + " : " + ChatColor.GOLD + "Ga naar de minigames server!" );
-				player.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.AQUA + "/pixelmon" + ChatColor.DARK_GRAY + " : " + ChatColor.GOLD + "Ga naar de pixelmon server!" );
+				player.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.AQUA + "/kitpvp" + ChatColor.DARK_GRAY + " : " + ChatColor.GOLD + "Ga naar de kitpvp server!" );
 				e.setCancelled(true);
 			} else if(message.equalsIgnoreCase("/survival")) { e.setCancelled(false);
 			} else if(message.equalsIgnoreCase("/kitpvp")) { e.setCancelled(false);
@@ -784,22 +788,28 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		if(e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) {
 			if(player.getInventory().getItemInMainHand().equals(stack1)) {
 				sendServer("survival", player);
-				} else if(player.getInventory().getItemInMainHand().equals(stack2)) {
-					sendServer("minigames", player);
-				} else if(player.getInventory().getItemInMainHand().equals(stack3)) {
-					sendServer("kitpvp", player);
-				} else if(player.getInventory().getItemInMainHand().equals(stack4)) {
-					invisOn(player);
-					setStaffInventory(player);
-				} else if(player.getInventory().getItemInMainHand().equals(stack5)) {
-					invisOff(player);
-					setStaffInventory(player);
-				} else if(player.getInventory().getItemInMainHand().equals(stack6)) {
-					staffOff(player);
-					setPlayerInventory(player);
-			} else {
-				e.setCancelled(!Staff.containsKey((Player) e.getPlayer()));
 			}
+			if(player.getInventory().getItemInMainHand().equals(stack2)) {
+				sendServer("minigames", player);
+			}
+			if(player.getInventory().getItemInMainHand().equals(stack3)) {
+				sendServer("kitpvp", player);
+			}
+			if(player.getInventory().getItemInMainHand().equals(stack4)) {
+				invisOn(player);
+				setStaffInventory(player);
+			}
+			if(player.getInventory().getItemInMainHand().equals(stack5)) {
+				invisOff(player);
+				setStaffInventory(player);
+			}
+			if(player.getInventory().getItemInMainHand().equals(stack6)) {
+				staffOff(player);
+				setPlayerInventory(player);
+			}
+
+			//stop
+			e.setCancelled(!Staff.containsKey((Player) e.getPlayer()));
 		}
 		}
 
@@ -845,7 +855,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		//cancel if player is not in staff mode
 		e.setCancelled(!Staff.containsKey(e.getPlayer()));
 		if(e.getPlayer().isOp()) {
-			e.getPlayer().sendMessage(ChatColor.RED + "Enable staffmode first: " + ChatColor.AQUA + "/staff");
+			staffError(e.getPlayer());
 		}
 	}
 	
@@ -855,7 +865,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		//cancel if player is not in staff mode
 		e.setCancelled(!Staff.containsKey(e.getPlayer()));
 		if(e.getPlayer().isOp()) {
-			e.getPlayer().sendMessage(ChatColor.RED + "Enable staffmode first: " + ChatColor.AQUA + "/staff");
+			staffError(e.getPlayer());
 		}
 	}
 	

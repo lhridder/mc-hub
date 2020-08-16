@@ -2,7 +2,7 @@ main: nl.lucasridder.java.Main
 name: Hub
 version: 1.3
 author: LucasRidder
-api-version: 1.15
+api-version: 1.16
 
 commands:
  gamemode:
