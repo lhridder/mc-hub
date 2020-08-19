@@ -45,8 +45,6 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 
 	//variabelen
 		int all = 0;
-		boolean lock;
-		String lockreason;
 		HashMap<Player, String> PlayerBoolean = new HashMap<>();
 		HashMap<Player, Boolean> Staff = new HashMap<>();
 		HashMap<Player, Boolean> Invis = new HashMap<>();
@@ -160,22 +158,15 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		ScoreboardManager manager = Bukkit.getScoreboardManager();
 		Scoreboard b = manager.getNewScoreboard();
 
-		String top = this.getConfig().getString("scoreboard.top");
-		Objective o = b.registerNewObjective("Gold", "", ChatColor.BLUE + "" + ChatColor.BOLD + top);
+		Objective o = b.registerNewObjective("Gold", "", ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Lobby");
 		o.setDisplaySlot(DisplaySlot.SIDEBAR);
-
-		//spacer 9
-		o.getScore(ChatColor.YELLOW + "").setScore(9);
-
-		//Welkom *speler* 8
-		o.getScore(ChatColor.YELLOW + "Welkom, " + ChatColor.GRAY + player.getName()).setScore(8);
-
-		//spacer 7
-		o.getScore(ChatColor.RED + "").setScore(7);
 
 		//staff 4 t/m 6
 			//check if player has staff permission
 			if(player.isOp()) {
+				//spacer 7
+				o.getScore(ChatColor.RED + "").setScore(7);
+
 				//if staff mode enabled
 				if(Staff.containsKey(player)) {
 					//staff on 6
@@ -183,35 +174,42 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 					//check invis
 					if(Invis.containsKey(player)) {
 						//invis on 5
-						o.getScore(ChatColor.BLUE + " - Invisability: " + ChatColor.GREEN + "✔").setScore(5);
+						o.getScore(ChatColor.BLUE + "  Invisability: " + ChatColor.GREEN + "✔").setScore(5);
 					} else {
 						//invis off 5
-						o.getScore(ChatColor.BLUE + " - Invisability: " + ChatColor.RED + "✘").setScore(5);
+						o.getScore(ChatColor.BLUE + "  Invisability: " + ChatColor.RED + "✘").setScore(5);
 					}
 				} else {
 					//staff off 6
 					o.getScore(ChatColor.DARK_GREEN + "Staffmode: " + ChatColor.RED + "✘").setScore(6);
 				}
 
-				//spacer 4
-				o.getScore(ChatColor.DARK_PURPLE + "").setScore(4);
+			} else {
+				//spacer 6
+				o.getScore(ChatColor.RED + "").setScore(6);
+
+				//Welkom *speler* 5
+				o.getScore(ChatColor.YELLOW + "Welkom, " + ChatColor.GRAY + player.getName()).setScore(5);
 			}
 
+		//spacer 4
+		o.getScore(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "").setScore(4);
+
 		//totaal spelers proxy 3
-		o.getScore(ChatColor.GOLD + "Totaal aantal spelers: " + ChatColor.RED + this.all).setScore(3);
+		o.getScore(ChatColor.YELLOW + "Totaal spelers: " + ChatColor.RED + this.all).setScore(3);
 
 		//totaal spelers hub 2
 		int spelers = getServer().getOnlinePlayers().size();
 		int invis = Invis.size();
 		int hub = spelers - invis;
-		o.getScore(ChatColor.BLUE + " - Hub: " + ChatColor.RED + hub).setScore(2);
+		o.getScore(ChatColor.BLUE + "  Hub: " + ChatColor.RED + hub).setScore(2);
+
 
 		//spacer 1
 		o.getScore("").setScore(1);
 
-		//ip footer 0
-		String name = this.getConfig().getString("scoreboard.name");
-		o.getScore(ChatColor.BOLD + "" + ChatColor.GREEN + name).setScore(0);
+		//server footer 0
+		o.getScore(ChatColor.GREEN + "LucasRidder.nl").setScore(0);
 
 		player.setScoreboard(b);
 
@@ -292,7 +290,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		player.sendMessage(ChatColor.GOLD + "Your invisability was: " + ChatColor.RED + "disabled.");
 		setStaffInventory(player);
 		UUID uuid = player.getUniqueId();
-		getConfig().set("player. " + uuid + ".invis", false);
+		getConfig().set("player." + uuid + ".invis", false);
 		saveConfig();
 	}
 
@@ -303,7 +301,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		Staff.put(player, true);
 		setStaffInventory(player);
 		UUID uuid = player.getUniqueId();
-		if(getConfig().getBoolean("player. " + uuid + ".invis")) {
+		if(getConfig().getBoolean("player." + uuid + ".invis")) {
 			invisOn(player);
 		}
 	}
@@ -318,7 +316,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		Staff.remove(player);
 		setStaffInventory(player);
 		UUID uuid = player.getUniqueId();
-		getConfig().set("player. " + uuid + ".staff", false);
+		getConfig().set("player." + uuid + ".staff", false);
 		saveConfig();
 	}
 
@@ -342,7 +340,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 
 		//register events
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
-		
+
 		//config
 		this.getConfig().options().copyDefaults(true);
         this.saveDefaultConfig();
@@ -379,14 +377,6 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		Player player = e.getPlayer();
 		String name = player.getName();
-		//lock
-		if(!player.isOp()) {
-			if (this.lock) {
-				player.kickPlayer(ChatColor.GRAY + "De server is momenteel in lockdown vanwege:" + "\n" +
-						ChatColor.BLUE + this.lockreason + "\n" +
-						ChatColor.YELLOW + "Zie actuele status via: " + ChatColor.AQUA + "https://www.discord.gg/AzVCaQE");
-			}
-		}
 
 		//spawn loc
 		try {
@@ -421,8 +411,12 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			}
 		}.runTaskTimer(this, 20, 20);
 
-		//set tablist
-		// setTablist(player);
+		//tablist
+		if(player.isOp()) {
+			player.setPlayerListName(ChatColor.RED + player.getName());
+		} else {
+			player.setPlayerListName(ChatColor.YELLOW + player.getName());
+		}
 
 		//check config for player invis info
 		if(!Invis.containsKey(player)) {
@@ -435,7 +429,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				e.setJoinMessage(ChatColor.DARK_GRAY + "Welkom " + ChatColor.RESET + name);
 			} else {
 				//Join message
-				e.setJoinMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "+" + ChatColor.DARK_GRAY + "] " + ChatColor.RESET + name);
+				e.setJoinMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "+" + ChatColor.DARK_GRAY + "] " + ChatColor.YELLOW + name);
 			}
 			motd(player);
 		} else {
@@ -443,7 +437,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			e.setJoinMessage(null);
 		}
 
-		//get invis staff
+		//get invis staff and nametag
 		for(Player players : this.getServer().getOnlinePlayers()) {
 			if(Invis.containsKey(players)) {
 				//check the players if they are staff
@@ -451,6 +445,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 					players.hidePlayer(this, player);
 				}
 			}
+
 		}
 
 		//register player in config
@@ -486,13 +481,13 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			//cancel quit message
 			e.setQuitMessage(null);
 			UUID uuid = player.getUniqueId();
-			getConfig().set("player. " + uuid + ".invis", true);
+			getConfig().set("player." + uuid + ".invis", true);
 			saveConfig();
 			Invis.remove(player);
 		}
 		if(Staff.containsKey(player)) {
 			UUID uuid = player.getUniqueId();
-			getConfig().set("player. " + uuid + ".staff", true);
+			getConfig().set("player." + uuid + ".staff", true);
 			saveConfig();
 			Staff.remove(player);
 		}
@@ -634,37 +629,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		if(cmd.getName().equalsIgnoreCase("minigames")) { sendServer("minigames", (Player) sender); }
 
 		//kitpvp
-		if(cmd.getName().equalsIgnoreCase("kitpvp")) { sendServer("kitpvp", (Player) sender); }
-
-		//lock
-		if(cmd.getName().equalsIgnoreCase("lock")) {
-			if(!this.lock) {
-				lock = true;
-				if (args.length == 0) {
-					this.lockreason = "onbekend";
-					sender.sendMessage(ChatColor.GREEN + "Lockdown geactiveerd!");
-				} else {
-					this.lockreason = args[0];
-					sender.sendMessage(ChatColor.GREEN + "Lockdown geactiveerd!");
-					sender.sendMessage(ChatColor.GRAY + "Reden: " + ChatColor.GOLD + this.lockreason);
-				}
-				//kick all players
-				sender.sendMessage(ChatColor.GREEN + "Kicking all players...");
-				for(Player players : this.getServer().getOnlinePlayers()) {
-					if(!players.isOp()) {
-						players.kickPlayer(ChatColor.GRAY + "De server is momenteel in lockdown vanwege:" + "\n" +
-								ChatColor.BLUE + this.lockreason + "\n" +
-								ChatColor.YELLOW + "Zie actuele status via: " + ChatColor.AQUA + "https://www.discord.gg/AzVCaQE");
-					} else {
-						players.sendMessage(ChatColor.GREEN + "Lockdown geactiveerd | Kick Bypassed");
-					}
-				}
-				System.out.println("[HUB]" + ChatColor.DARK_RED + " Lockdown activated by " + ChatColor.GREEN + sender.getName() + ChatColor.RED + "!");
-			} else {
-				this.lock = false;
-				sender.sendMessage(ChatColor.GREEN + "Lockdown opgeheven");
-			}
-		}
+		if(cmd.getName().equalsIgnoreCase("kitpvp")) { sendServer("pvp", (Player) sender); }
 
 		//motd
 		if(cmd.getName().equalsIgnoreCase("motd")) {
@@ -728,9 +693,9 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				player.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.AQUA + "/minigames" + ChatColor.DARK_GRAY + " : " + ChatColor.GOLD + "Ga naar de minigames server!" );
 				player.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.AQUA + "/kitpvp" + ChatColor.DARK_GRAY + " : " + ChatColor.GOLD + "Ga naar de kitpvp server!" );
 				e.setCancelled(true);
-			} else if(message.equalsIgnoreCase("/survival")) { e.setCancelled(false);
-			} else if(message.equalsIgnoreCase("/kitpvp")) { e.setCancelled(false);
-			} else e.setCancelled(!message.equalsIgnoreCase("/minigames"));
+			} else {
+				e.setCancelled(!(message.equalsIgnoreCase("/survival") | message.equalsIgnoreCase("/minigames") | message.equalsIgnoreCase("/kitpvp")));
+			}
 		}
 		}
 
@@ -771,45 +736,41 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		ItemMeta meta5 = stack5.getItemMeta();
 		meta5.setDisplayName(ChatColor.GOLD + "Disable invis mode.");
 		stack5.setItemMeta(meta5);
-		player.getInventory().setItem(8, stack5);
 		//invis off state item
 		ItemStack stack4 = new ItemStack(Material.GRAY_DYE);
 		ItemMeta meta4 = stack4.getItemMeta();
 		meta4.setDisplayName(ChatColor.GOLD + "Enable invis mode.");
 		stack4.setItemMeta(meta4);
-		player.getInventory().setItem(8, stack4);
 		//Leave staffmode item
 		ItemStack stack6 = new ItemStack(Material.RED_BED);
 		ItemMeta meta6 = stack6.getItemMeta();
 		meta6.setDisplayName(ChatColor.GOLD + "Leave staffmode.");
 		stack6.setItemMeta(meta6);
-		player.getInventory().setItem(8, stack6);
 
-		if(e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) {
+		if(e.getAction() == Action.RIGHT_CLICK_BLOCK | e.getAction() == Action.RIGHT_CLICK_AIR) {
+
+			//staff items
+			if(player.isOp()) {
+				if(player.getInventory().getItemInMainHand().equals(stack4)) { invisOn(player); }
+				if(player.getInventory().getItemInMainHand().equals(stack5)) { invisOff(player); }
+				if(player.getInventory().getItemInMainHand().equals(stack6)) { staffOff(player); }
+				e.setCancelled(true);
+			}
+
+			//plebs
 			if(player.getInventory().getItemInMainHand().equals(stack1)) {
 				sendServer("survival", player);
+				e.setCancelled(true);
 			}
 			if(player.getInventory().getItemInMainHand().equals(stack2)) {
 				sendServer("minigames", player);
+				e.setCancelled(true);
 			}
 			if(player.getInventory().getItemInMainHand().equals(stack3)) {
-				sendServer("kitpvp", player);
-			}
-			if(player.getInventory().getItemInMainHand().equals(stack4)) {
-				invisOn(player);
-				setStaffInventory(player);
-			}
-			if(player.getInventory().getItemInMainHand().equals(stack5)) {
-				invisOff(player);
-				setStaffInventory(player);
-			}
-			if(player.getInventory().getItemInMainHand().equals(stack6)) {
-				staffOff(player);
-				setPlayerInventory(player);
+				sendServer("pvp", player);
+				e.setCancelled(true);
 			}
 
-			//stop
-			e.setCancelled(!Staff.containsKey((Player) e.getPlayer()));
 		}
 		}
 
@@ -821,6 +782,14 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 
 	//TODO tab stop
 
+	//TODO Portals
+	/*
+	public void onPlayerMove(PlayerMoveEvent e) {
+
+	}
+
+	*/
+
 	//Drop
 	@EventHandler
 	public void onDrop(PlayerDropItemEvent e) {
@@ -831,8 +800,14 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	//Inv click
 	@EventHandler
 	public void onClick(InventoryClickEvent e) {
+		Player player = (Player) e.getWhoClicked();
 		//cancel if player is not in staff mode
-		e.setCancelled(!Staff.containsKey((Player) e.getWhoClicked()));
+		if(!Staff.containsKey(player)) {
+			e.setCancelled(true);
+			if(player.isOp()) {
+				staffError(player);
+			}
+		}
 	}
 	
 	//No Damage
