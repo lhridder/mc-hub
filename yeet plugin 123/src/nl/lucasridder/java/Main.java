@@ -44,7 +44,7 @@ import java.util.UUID;
 public class Main extends JavaPlugin implements Listener, PluginMessageListener {
 
 	//variabelen
-		int all = 0;
+		int all;
 		HashMap<Player, String> PlayerBoolean = new HashMap<>();
 		HashMap<Player, Boolean> Staff = new HashMap<>();
 		HashMap<Player, Boolean> Invis = new HashMap<>();
@@ -145,11 +145,11 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			meta6.setDisplayName(ChatColor.GOLD + "Leave staffmode.");
 			stack6.setItemMeta(meta6);
 			player.getInventory().setItem(8, stack6);
+			//finish
+			player.updateInventory();
 		} else {
 			setPlayerInventory(player);
 		}
-		//finish
-		player.updateInventory();
 	}
 
 	//update scoreboard
@@ -409,7 +409,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 					updateScoreboard(player);
 				}
 			}
-		}.runTaskTimer(this, 20, 20);
+		}.runTaskTimer(this, 20, 100);
 
 		//tablist
 		if(player.isOp()) {
@@ -450,7 +450,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 
 		//register player in config
 		// UUID uuid = player.getUniqueId();
-		getConfig().set("player. " + uuid + ".name", player.getName());
+		getConfig().set("player." + uuid + ".name", player.getName());
 		saveConfig();
 		}
 
@@ -497,85 +497,86 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 	@SuppressWarnings("NullableProblems")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		
+
 		if(cmd.getName().equalsIgnoreCase("gamemode")) {
-			
-			//check of sender speler is
-			if(!(sender instanceof Player)) {
-			//zeg het
-				sender.sendMessage(ChatColor.RED + "Je bent geen speler");
-				return true;
-			} else {
+			if(sender.hasPermission("survival.admin")) {
+				//check of sender speler is
 				//te weinig argumenten
-				if(args.length == 0) {
+				if (args.length == 0) {
 					sender.sendMessage(ChatColor.RED + "/gamemode (creative/survival/spectator/adventure)/(0/1/2/3) (speler)");
 					return true;
 				}
 
 				//teveel argumenten
-				if(args.length > 2) {
+				if (args.length > 2) {
 					sender.sendMessage(ChatColor.RED + "/gamemode (creative/survival/spectator/adventure)/(0/1/2/3) (speler)");
 					return true;
 				}
 
 				//goede aantal argumenten
-				if(args.length == 1 ) {
+				if (args.length == 1) {
 					//pak speler
 					Player player = (Player) sender;
 
-					if(args[0].equalsIgnoreCase("creative") | args[0].equalsIgnoreCase("1")) {
+					if (args[0].equalsIgnoreCase("creative") | args[0].equalsIgnoreCase("1")) {
 						player.setGameMode(GameMode.CREATIVE);
 						sender.sendMessage(ChatColor.GREEN + "Gedaan.");
 						return true;
-					} else if(args[0].equalsIgnoreCase("survival") | args[0].equalsIgnoreCase("0")) {
+					} else if (args[0].equalsIgnoreCase("survival") | args[0].equalsIgnoreCase("0")) {
 						player.setGameMode(GameMode.SURVIVAL);
 						sender.sendMessage(ChatColor.GREEN + "Gedaan.");
 						return true;
-					} else if(args[0].equalsIgnoreCase("spectator") | args[0].equalsIgnoreCase("3")) {
+					} else if (args[0].equalsIgnoreCase("spectator") | args[0].equalsIgnoreCase("3")) {
 						player.setGameMode(GameMode.SPECTATOR);
 						sender.sendMessage(ChatColor.GREEN + "Gedaan.");
 						return true;
-					} else if(args[0].equalsIgnoreCase("adventure") | args[0].equalsIgnoreCase("2")) {
+					} else if (args[0].equalsIgnoreCase("adventure") | args[0].equalsIgnoreCase("2")) {
 						player.setGameMode(GameMode.ADVENTURE);
 						sender.sendMessage(ChatColor.GREEN + "Gedaan.");
 						return true;
-					} else sender.sendMessage(ChatColor.RED + "/gamemode (creative/survival/spectator/adventure)/(0/1/2/3) (speler)");
-
+					} else
+						sender.sendMessage(ChatColor.RED + "/gamemode (creative/survival/spectator/adventure)/(0/1/2/3) (speler)");
+					return true;
 				}
 
 				//andere speler
-				if(args.length == 2 ) {
+				if (args.length == 2) {
 					//pak speler
 					Player target = Bukkit.getServer().getPlayer(args[1]);
-					if(target == null) {
+					if (target == null) {
 						sender.sendMessage(ChatColor.RED + "Doel is niet online");
+						return true;
 					} else {
 
-					if(args[0].equalsIgnoreCase("creative") | args[0].equalsIgnoreCase("1")) {
-						target.setGameMode(GameMode.CREATIVE);
-						target.sendMessage(ChatColor.GREEN + "Gamemode aangepast.");
-						sender.sendMessage(ChatColor.GREEN + "Gedaan.");
-						return true;
-					} else if(args[0].equalsIgnoreCase("survival") | args[0].equalsIgnoreCase("0")) {
-						target.setGameMode(GameMode.SURVIVAL);
-						target.sendMessage(ChatColor.GREEN + "Gamemode aangepast.");
-						sender.sendMessage(ChatColor.GREEN + "Gedaan.");
-						return true;
-					} else if(args[0].equalsIgnoreCase("spectator") | args[0].equalsIgnoreCase("3")) {
-						target.setGameMode(GameMode.SPECTATOR);
-						target.sendMessage(ChatColor.GREEN + "Gamemode aangepast.");
-						sender.sendMessage(ChatColor.GREEN + "Gedaan.");
-						return true;
-					} else if(args[0].equalsIgnoreCase("adventure") | args[0].equalsIgnoreCase("2")) {
-						target.setGameMode(GameMode.ADVENTURE);
-						target.sendMessage(ChatColor.GREEN + "Gamemode aangepast.");
-						sender.sendMessage(ChatColor.GREEN + "Gedaan.");
-						return true;
-					} else {
-						sender.sendMessage(ChatColor.RED + "/gamemode (creative/survival/spectator/adventure)/(0/1/2/3) (speler)");
-					}
+						if (args[0].equalsIgnoreCase("creative") | args[0].equalsIgnoreCase("1")) {
+							target.setGameMode(GameMode.CREATIVE);
+							target.sendMessage(ChatColor.GREEN + "Gamemode aangepast.");
+							sender.sendMessage(ChatColor.GREEN + "Gedaan.");
+							return true;
+						} else if (args[0].equalsIgnoreCase("survival") | args[0].equalsIgnoreCase("0")) {
+							target.setGameMode(GameMode.SURVIVAL);
+							target.sendMessage(ChatColor.GREEN + "Gamemode aangepast.");
+							sender.sendMessage(ChatColor.GREEN + "Gedaan.");
+							return true;
+						} else if (args[0].equalsIgnoreCase("spectator") | args[0].equalsIgnoreCase("3")) {
+							target.setGameMode(GameMode.SPECTATOR);
+							target.sendMessage(ChatColor.GREEN + "Gamemode aangepast.");
+							sender.sendMessage(ChatColor.GREEN + "Gedaan.");
+							return true;
+						} else if (args[0].equalsIgnoreCase("adventure") | args[0].equalsIgnoreCase("2")) {
+							target.setGameMode(GameMode.ADVENTURE);
+							target.sendMessage(ChatColor.GREEN + "Gamemode aangepast.");
+							sender.sendMessage(ChatColor.GREEN + "Gedaan.");
+							return true;
+						} else {
+							sender.sendMessage(ChatColor.RED + "/gamemode (creative/survival/spectator/adventure)/(0/1/2/3) (speler)");
+							return true;
+						}
 					}
 				}
+			} else {
+				sender.sendMessage(ChatColor.DARK_RED + "Geen toegang tot dit commando");
+				return true;
 			}
 		}
 		
@@ -602,26 +603,6 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				}
 		}
 		
-		//fly
-		if(cmd.getName().equalsIgnoreCase("fly")) {
-			if(!(sender instanceof Player)) {
-				//zeg het
-					sender.sendMessage(ChatColor.RED + "Je bent geen speler");
-					return true;
-				} else {
-					if(args.length == 0) {
-					Player player = (Player) sender;
-					player.setFlying(true); 
-					sender.sendMessage(ChatColor.GREEN + "Vliegen ingeschakeld.");
-					}
-					if(args.length > 0) {
-						Player player = (Player) sender;
-						player.setFlying(false); 
-						sender.sendMessage(ChatColor.GREEN + "Vliegen uitgeschakeld.");
-						}
-				}
-		}
-		
 		//survival
 		if(cmd.getName().equalsIgnoreCase("survival")) { sendServer("survival", (Player) sender); }
 		
@@ -630,17 +611,6 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 
 		//kitpvp
 		if(cmd.getName().equalsIgnoreCase("kitpvp")) { sendServer("pvp", (Player) sender); }
-
-		//motd
-		if(cmd.getName().equalsIgnoreCase("motd")) {
-			if(!(sender instanceof Player)) {
-				//zeg het
-				sender.sendMessage(ChatColor.RED + "Je bent geen speler");
-				return true;
-			} else {
-				motd((Player) sender);
-			}
-		}
 
 		//stop
 		if(cmd.getName().equalsIgnoreCase("stop")) {
@@ -751,24 +721,26 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 
 			//staff items
 			if(player.isOp()) {
-				if(player.getInventory().getItemInMainHand().equals(stack4)) { invisOn(player); }
-				if(player.getInventory().getItemInMainHand().equals(stack5)) { invisOff(player); }
-				if(player.getInventory().getItemInMainHand().equals(stack6)) { staffOff(player); }
-				e.setCancelled(true);
+				if(player.getInventory().getItemInMainHand().equals(stack4)) { invisOn(player); return; }
+				if(player.getInventory().getItemInMainHand().equals(stack5)) { invisOff(player); return; }
+				if(player.getInventory().getItemInMainHand().equals(stack6)) { staffOff(player); return; }
 			}
 
 			//plebs
 			if(player.getInventory().getItemInMainHand().equals(stack1)) {
 				sendServer("survival", player);
 				e.setCancelled(true);
+				return;
 			}
 			if(player.getInventory().getItemInMainHand().equals(stack2)) {
 				sendServer("minigames", player);
 				e.setCancelled(true);
+				return;
 			}
 			if(player.getInventory().getItemInMainHand().equals(stack3)) {
 				sendServer("pvp", player);
 				e.setCancelled(true);
+				return;
 			}
 
 		}

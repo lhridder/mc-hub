@@ -8,8 +8,6 @@ commands:
  gamemode:
   aliases: gm
   usage: "Usage: /<command> [survival|creative|adventure|spectator|0|1|2|3] ([player])"
- fly:
-  usage: "/<command>"
  survival:
   usage: "/<command>"
  minigames:
@@ -17,11 +15,6 @@ commands:
  kitpvp:
   usage: "/<command>"
  setspawn:
-  usage: "/<command>"
- lock:
-  aliases: lockdown
-  usage: "/<command> (reden)"
- motd:
   usage: "/<command>"
  stop:
   usage: "/<command>"
