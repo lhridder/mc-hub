@@ -1,6 +1,6 @@
 main: nl.lucasridder.java.Main
 name: Hub
-version: 1.3
+version: 1.4
 author: LucasRidder
 api-version: 1.16
 
@@ -23,3 +23,6 @@ commands:
  vanish:
   aliases: v
   usage: "/<command>"
+ playtime:
+  aliases: pt
+  usage: "/<command> (player)"

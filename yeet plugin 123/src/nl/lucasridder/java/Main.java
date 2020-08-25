@@ -466,7 +466,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				if (player.isOp()) {
 					e.setQuitMessage(ChatColor.RED + name + ChatColor.DARK_RED + " -> " + ChatColor.GRAY + server);
 				} else {
-					e.setQuitMessage(ChatColor.WHITE + name + ChatColor.DARK_RED + " -> " + ChatColor.GRAY + server);
+					e.setQuitMessage(ChatColor.YELLOW + name + ChatColor.DARK_RED + " -> " + ChatColor.GRAY + server);
 				}
 				PlayerBoolean.remove(player);
 			} else {
@@ -474,7 +474,7 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				if (player.isOp()) {
 					e.setQuitMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "-" + ChatColor.DARK_GRAY + "] " + ChatColor.RED + name);
 				} else {
-					e.setQuitMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "-" + ChatColor.DARK_GRAY + "] " + ChatColor.RESET + name);
+					e.setQuitMessage(ChatColor.DARK_GRAY + "[" + ChatColor.DARK_RED + "-" + ChatColor.DARK_GRAY + "] " + ChatColor.YELLOW + name);
 				}
 			}
 		} else {
@@ -647,6 +647,56 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 			}
 		}
 
+		//playtime
+		if(cmd.getName().equalsIgnoreCase("playtime")) {
+			//te weinig argumenten
+			if (args.length == 0) {
+				Player player = (Player) sender;
+				String name = player.getName();
+				//get source
+				int ptt = player.getStatistic(Statistic.PLAY_ONE_MINUTE);
+				//calculate
+				int pts = ptt / 20; //seconds
+				int ptm = pts / 60; //minutes
+				int pth = ptm / 60; //hours
+
+				int rm = ptm - (pth*60); //res minutes
+				int rs = pts - (ptm*60); //res seconds
+
+				//report
+				player.sendMessage(ChatColor.GREEN + "Hub playtime: "
+						+ ChatColor.GOLD + pth + ChatColor.GREEN + " uren, "
+						+ ChatColor.GOLD + rm + ChatColor.GREEN + " minuten en "
+						+ ChatColor.GOLD + rs + ChatColor.GREEN + " seconden");
+				return true;
+			} else {
+				//goed
+				Player target = Bukkit.getPlayer(args[0]);
+				if (target == null) {
+					sender.sendMessage(ChatColor.RED + "Doel is niet online");
+					return true;
+				}
+				//get source
+				int ptt = target.getStatistic(Statistic.PLAY_ONE_MINUTE);
+				String name = target.getName();
+				//calculate
+				int pts = ptt / 20; //seconds
+				int ptm = pts / 60; //minutes
+				int pth = ptm / 60; //hours
+
+				int rm = ptm - (pth*60); //res minutes
+				int rs = pts - (ptm*60); //res seconds
+
+				//report
+				target.sendMessage(ChatColor.GREEN + "Hub playtime: "
+						+ ChatColor.GOLD + name + ChatColor.GREEN + ": "
+						+ ChatColor.GOLD + pth + ChatColor.GREEN + " uren, "
+						+ ChatColor.GOLD + rm + ChatColor.GREEN + " minuten en "
+						+ ChatColor.GOLD + rs + ChatColor.GREEN + " seconden");
+				return true;
+			}
+		}
+
 		return true;
 	}
 	
@@ -664,7 +714,11 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 				player.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.AQUA + "/kitpvp" + ChatColor.DARK_GRAY + " : " + ChatColor.GOLD + "Ga naar de kitpvp server!" );
 				e.setCancelled(true);
 			} else {
-				e.setCancelled(!(message.equalsIgnoreCase("/survival") | message.equalsIgnoreCase("/minigames") | message.equalsIgnoreCase("/kitpvp")));
+				e.setCancelled(!(message.equalsIgnoreCase("/survival")
+						| message.equalsIgnoreCase("/minigames")
+						| message.equalsIgnoreCase("/kitpvp")
+						| message.startsWith("/playtime")
+						| message.startsWith("/pt") ));
 			}
 		}
 		}
