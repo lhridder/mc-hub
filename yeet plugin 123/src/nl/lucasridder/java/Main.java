@@ -2,15 +2,14 @@ package nl.lucasridder.java;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-import net.minecraft.server.v1_16_R1.IChatBaseComponent;
-import net.minecraft.server.v1_16_R1.PacketPlayOutPlayerListHeaderFooter;
-import net.minecraft.server.v1_16_R1.PacketPlayOutTitle;
-import net.minecraft.server.v1_16_R1.PlayerConnection;
+
+import net.minecraft.server.v1_16_R2.IChatBaseComponent;
+import net.minecraft.server.v1_16_R2.PacketPlayOutTitle;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.output.ByteArrayOutputStream;
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,7 +34,6 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.HashMap;
@@ -238,8 +236,8 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 		//title
 		PacketPlayOutTitle title = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, IChatBaseComponent.ChatSerializer.a("{\"text\":\"§aWelkom!\"}"), 20, 40, 20);
 		PacketPlayOutTitle subtitle = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, IChatBaseComponent.ChatSerializer.a("{\"text\":\"§bIn de hub\"}"), 20, 40, 20);
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(title);
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(subtitle);
+		((CraftPlayer)player).getHandle().playerConnection.sendPacket(title);
+		((CraftPlayer)player).getHandle().playerConnection.sendPacket(subtitle);
 	}
 
 	//setTablist
@@ -808,13 +806,39 @@ public class Main extends JavaPlugin implements Listener, PluginMessageListener 
 
 	//TODO tab stop
 
-	//TODO Portals
-	/*
+	//Portals
+	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent e) {
-
+		Player player = e.getPlayer();
+		Location loc = player.getLocation();
+		//kijk water
+		if(loc.getBlock().getType().equals(Material.WATER)) {
+			//hoogte
+			if(loc.getBlockY() >= 59 && loc.getBlockY() <= 64) {
+				//links
+				if(loc.getBlockX() == 16) {
+					//survival
+					if(loc.getBlockZ() >= 31 && loc.getBlockZ() <= 35) {
+						//send server
+						sendServer("survival", player);
+					}
+				}
+				//rechts
+				if(loc.getBlockX() == -16) {
+					//minigames
+					if(loc.getBlockZ() >= 31 && loc.getBlockZ() <= 35) {
+						//send server
+						sendServer("minigames", player);
+					}
+					//kitpvp
+					if(loc.getBlockZ() >= 43 && loc.getBlockZ() <= 47) {
+						//send server
+						sendServer("kitpvp", player);
+					}
+				}
+			}
+		}
 	}
-
-	*/
 
 	//Drop
 	@EventHandler
